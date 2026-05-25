@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Simple WebAR Marker Test</title>
+  <title>Geolocated WebAR Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-  <!-- A-Frame and AR.js. These load from public CDNs, so the phone needs internet access. -->
+  <!-- A-Frame and AR.js location-based AR -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
 
@@ -17,98 +17,115 @@
       background: #000;
     }
 
-    #instructions {
+    #panel {
       position: fixed;
-      z-index: 10;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      z-index: 20;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
       padding: 12px 14px;
+      border-radius: 12px;
       background: rgba(0, 0, 0, 0.72);
       color: white;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.35;
     }
 
-    #instructions strong {
+    #panel strong {
       display: block;
       margin-bottom: 4px;
       font-size: 16px;
     }
 
-    #marker-status {
+    #status {
       position: fixed;
-      z-index: 11;
+      z-index: 21;
       top: 10px;
       left: 10px;
-      padding: 8px 10px;
+      right: 10px;
+      padding: 9px 11px;
       border-radius: 999px;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.72);
       color: white;
       font-size: 13px;
-    }
-
-    a {
-      color: #fff;
-      text-decoration: underline;
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
-  <div id="marker-status">Looking for marker...</div>
+  <div id="status">Starting camera and location...</div>
 
-  <div id="instructions">
-    <strong>AR test</strong>
-    Allow camera access, then point your phone at a printed HIRO marker.
-    Move closer/further away if the model is too small or too large.
+  <div id="panel">
+    <strong>Geolocated AR test</strong>
+    Allow camera and location access. Stand outside near the test point, then slowly turn around.
+    The model is placed at:<br>
+    Lat 52.107386, Long 1.356926
   </div>
 
   <a-scene
     embedded
     vr-mode-ui="enabled: false"
     renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true;"
-    arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
+    arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
   >
     <a-assets>
       <a-asset-item id="test-model" src="./model.glb"></a-asset-item>
     </a-assets>
 
-    <!-- Standard AR.js HIRO marker -->
-    <a-marker preset="hiro" id="hiro-marker">
-      <!--
-        Scale/position/rotation are deliberately easy to tweak.
+    <!-- Camera with GPS tracking. gpsMinDistance controls how often position updates are processed. -->
+    <a-camera gps-new-camera="gpsMinDistance: 1"></a-camera>
 
-        If the model is huge: reduce scale, e.g. 0.05 0.05 0.05
-        If the model is tiny: increase scale, e.g. 1 1 1
-        If the model is sideways: change rotation.
-      -->
-      <a-entity
-        id="spinning-model"
-        gltf-model="#test-model"
-        position="0 0.45 0"
-        rotation="0 0 0"
-        scale="0.35 0.35 0.35"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear"
-      ></a-entity>
-    </a-marker>
-
-    <a-entity camera></a-entity>
+    <!-- The geolocated object. Tweak scale if it appears too large or too small. -->
+    <a-entity
+      id="geo-model"
+      gps-new-entity-place="latitude: 52.107386; longitude: 1.356926"
+      gltf-model="#test-model"
+      position="0 8 0"
+      rotation="0 0 0"
+      scale="4 4 4"
+      animation="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear"
+    ></a-entity>
   </a-scene>
 
   <script>
-    const marker = document.querySelector("#hiro-marker");
-    const status = document.querySelector("#marker-status");
+    const statusEl = document.getElementById("status");
+    const targetLat = 52.107386;
+    const targetLon = 1.356926;
 
-    marker.addEventListener("markerFound", () => {
-      status.textContent = "Marker found";
-      status.style.background = "rgba(0, 110, 40, 0.75)";
-    });
+    function distanceMetres(lat1, lon1, lat2, lon2) {
+      const R = 6371000;
+      const toRad = deg => deg * Math.PI / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
 
-    marker.addEventListener("markerLost", () => {
-      status.textContent = "Looking for marker...";
-      status.style.background = "rgba(0, 0, 0, 0.7)";
-    });
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const accuracy = Math.round(position.coords.accuracy || 0);
+          const distance = Math.round(distanceMetres(lat, lon, targetLat, targetLon));
+          statusEl.textContent = `GPS active. Accuracy about ${accuracy}m. Target about ${distance}m away. Slowly turn around.`;
+        },
+        error => {
+          statusEl.textContent = "Location problem: " + error.message;
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 15000
+        }
+      );
+    } else {
+      statusEl.textContent = "This browser does not support geolocation.";
+    }
   </script>
 </body>
 </html>
