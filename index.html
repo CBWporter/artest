@@ -72,17 +72,24 @@
     </a-assets>
 
     <a-marker preset="hiro" id="hiro-marker">
-      <a-entity
-        id="duck-model"
-        gltf-model="#test-model"
-        position="0 0.5 0"
-        rotation="0 0 0"
-        scale="3 3 3"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear"
-      ></a-entity>
+<a-entity
+  id="duck-pivot"
+  position="0 0.5 0"
+  rotation="0 0 0"
+  animation="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear"
+>
+  <a-entity
+    id="duck-model"
+    gltf-model="#test-model"
+    position="0 0 0"
+    rotation="0 90 0"
+    scale="3 3 3"
+  ></a-entity>
+</a-entity>
     </a-marker>
 
     <a-entity camera></a-entity>
+
   </a-scene>
 
   <script>
