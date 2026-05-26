@@ -1,21 +1,25 @@
-Giant Geolocated WebAR Field Test - New Location
+# HIRO Marker AR Sanity Test
 
-Target:
-Latitude: 52.107815
-Longitude: 1.356702
+This is a clean marker-based AR test. It does not use GPS.
 
-Settings:
-- Height above GPS point: position="0 10 0"
-- Scale: scale="50 50 50"
-- Rotation: one full spin every 9 seconds
-
-Upload these files to GitHub Pages, replacing the current files:
+Files:
 - index.html
 - model.glb
+- README.txt
 
-Then test on your phone at:
-https://cbwporter.github.io/artest/
+Upload index.html and model.glb to your GitHub Pages repository root, replacing the current geolocated test files.
 
-Important:
-GitHub Pages can take 1-3 minutes to update after committing changes.
-Phone GPS/compass drift is normal; slowly turn around and watch the top status line.
+Test:
+1. Open https://cbwporter.github.io/artest/ on your phone.
+2. Allow camera access.
+3. Point at a printed HIRO marker.
+4. The duck should appear and spin.
+
+Current model settings:
+- position="0 0.5 0"
+- scale="3 3 3"
+- rotation animation: one full spin every 7 seconds
+
+If the duck is too big/small, edit scale in index.html:
+- Smaller: scale="1 1 1"
+- Bigger: scale="5 5 5"
