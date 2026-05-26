@@ -1,8 +1,8 @@
-<!doctypde tml>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Duck E Orientation - HIRO Test</title>
+  <title>Static Duck E - HIRO Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -56,8 +56,8 @@
   <div id="status">Looking for HIRO marker...</div>
 
   <div id="instructions">
-    <strong>DUCK E ORIENTATION — v009 — no GPS</strong>
-    Uses facingduck.glb. Duck orientation is set to E: rotation 90 0 0.
+    <strong>STATIC DUCK E — v013 — no GPS</strong>
+    Uses facingduck.glb. No rotation. Duck orientation is set to E: rotation 90 0 0.
   </div>
 
   <a-scene
@@ -79,19 +79,19 @@
       smoothThreshold="5"
     >
 
-<a-entity
-  id="duck-display-pivot"
-  position="0 0.8 0"
->
-  <!-- animation="property: rotation; to: 0 360 0; loop: true; dur: 4000; easing: linear" -->
-  <a-entity
-    id="facing-duck"
-    gltf-model="#facing-duck-model"
-    position="0 0 0"
-    rotation="90 180 0"
-    scale="3 3 3"
-  ></a-entity>
-</a-entity>
+      <a-entity
+        id="duck-display-pivot"
+        position="0 0.8 0"
+        rotation="0 0 0"
+      >
+        <a-entity
+          id="facing-duck"
+          gltf-model="#facing-duck-model"
+          position="0 0 0"
+          rotation="90 0 0"
+          scale="3 3 3"
+        ></a-entity>
+      </a-entity>
 
     </a-marker>
 
@@ -103,7 +103,7 @@
     const status = document.querySelector("#status");
 
     marker.addEventListener("markerFound", () => {
-      status.textContent = "Marker found - DUCK E ORIENTATION v009";
+      status.textContent = "Marker found - STATIC DUCK E v013";
       status.style.background = "rgba(0, 110, 40, 0.78)";
     });
 
