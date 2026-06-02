@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Sutton Hoo Ship 04 - HIRO AR Test</title>
+  <title>Sutton Hoo Ship Textured - HIRO AR Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -56,8 +56,8 @@
   <div id="status" style="display: none;">Looking for HIRO marker...</div>
 
   <div id="instructions" style="display: none;">
-    <strong>SUTTON HOO SHIP 04 — v019 — no GPS</strong>
-    Uses SuttonHooShip04.glb. Static HIRO marker AR test.
+    <strong>SUTTON HOO SHIP Textured</strong>
+    Uses Ship textured.glb. Static HIRO marker AR test.
   </div>
 
   <a-scene
@@ -98,7 +98,7 @@
   const status = document.querySelector("#status");
 
   marker.addEventListener("markerFound", () => {
-    status.textContent = "Marker found - SuttonHooShip04.glb";
+    status.textContent = "Marker found - Ship textured.glb";
     // status.style.display = "block";
     status.style.background = "rgba(0, 110, 40, 0.78)";
   });
