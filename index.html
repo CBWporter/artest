@@ -16,18 +16,47 @@
       background: #000;
     }
 
-    #status,
+    #status {
+      position: fixed;
+      z-index: 20;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      text-align: center;
+      font-size: 14px;
+    }
+
     #instructions {
-      display: none;
+      position: fixed;
+      z-index: 20;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    #instructions strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
     }
   </style>
 </head>
 
 <body>
-  <div id="status">Looking for HIRO marker...</div>
+  <div id="status" style="display: none;">Looking for HIRO marker...</div>
 
-  <div id="instructions">
-    <strong>SUTTON HOO SHIP 04 — v030 — no GPS</strong>
+  <div id="instructions" style="display: none;">
+    <strong>SUTTON HOO SHIP 04 — v019 — no GPS</strong>
     Uses SuttonHooShip04.glb. Static HIRO marker AR test.
   </div>
 
@@ -53,9 +82,9 @@
       <a-entity
         id="ship-display"
         gltf-model="#ship-model"
-        position="-0.4 0.05 0"
+        position="0 0.05 0"
         rotation="210 0 0"
-        scale="0.02 0.02 0.02"
+        scale="0.01 0.01 0.01"
         animation="property: position; from: -0.4 0.05 0; to: 0.4 0.05 0; dir: alternate; loop: true; dur: 5000; easing: easeInOutSine"
       ></a-entity>
 
@@ -64,16 +93,21 @@
     <a-entity camera></a-entity>
   </a-scene>
 
-  <script>
-    const marker = document.querySelector("#hiro-marker");
+<script>
+  const marker = document.querySelector("#hiro-marker");
+  const status = document.querySelector("#status");
 
-    marker.addEventListener("markerFound", () => {
-      console.log("Marker found - SuttonHooShip04.glb");
-    });
+  marker.addEventListener("markerFound", () => {
+    status.textContent = "Marker found - SuttonHooShip04.glb";
+    // status.style.display = "block";
+    status.style.background = "rgba(0, 110, 40, 0.78)";
+  });
 
-    marker.addEventListener("markerLost", () => {
-      console.log("Marker lost");
-    });
-  </script>
+  marker.addEventListener("markerLost", () => {
+    status.textContent = "Looking for HIRO marker...";
+    // status.style.display = "block";
+    status.style.background = "rgba(0, 0, 0, 0.75)";
+  });
+</script>
 </body>
 </html>
