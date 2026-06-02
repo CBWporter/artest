@@ -92,15 +92,18 @@
     <a-entity camera></a-entity>
   </a-scene>
 
-  <script>
+ <script>
   const marker = document.querySelector("#hiro-marker");
+  const status = document.querySelector("#status");
 
   marker.addEventListener("markerFound", () => {
-    console.log("Marker found");
+    status.textContent = "Marker found - SuttonHooShip04.glb";
+    status.style.background = "rgba(0, 110, 40, 0.78)";
   });
 
   marker.addEventListener("markerLost", () => {
-    console.log("Marker lost");
+    status.textContent = "Looking for HIRO marker...";
+    status.style.background = "rgba(0, 0, 0, 0.75)";
   });
 </script>
 </body>
