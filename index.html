@@ -93,18 +93,15 @@
   </a-scene>
 
   <script>
-    const marker = document.querySelector("#hiro-marker");
-    const status = document.querySelector("#status");
+  const marker = document.querySelector("#hiro-marker");
 
-    marker.addEventListener("markerFound", () => {
-      status.textContent = "Marker found - SuttonHooShip04.glb";
-      status.style.background = "rgba(0, 110, 40, 0.78)";
-    });
+  marker.addEventListener("markerFound", () => {
+    console.log("Marker found");
+  });
 
-    marker.addEventListener("markerLost", () => {
-      status.textContent = "Looking for HIRO marker...";
-      status.style.background = "rgba(0, 0, 0, 0.75)";
-    });
-  </script>
+  marker.addEventListener("markerLost", () => {
+    console.log("Marker lost");
+  });
+</script>
 </body>
 </html>
