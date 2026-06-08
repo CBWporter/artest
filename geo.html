@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sutton Hoo Ship Textured - Geolocated AR Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000;
+    }
+
+    #status {
+      position: fixed;
+      z-index: 20;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    #instructions {
+      position: fixed;
+      z-index: 20;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    #instructions strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="status">Starting geolocated AR...</div>
+
+  <div id="instructions">
+    <strong>GEO SUTTON HOO SHIP — v001</strong>
+    Uses Shiptextured.glb. Target: 52.1073889, 1.3568889. Height: 15m.
+  </div>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true;"
+    arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+  >
+    <a-assets>
+      <a-asset-item id="ship-model" src="./Shiptextured.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera gps-new-camera="gpsMinDistance: 1"></a-camera>
+
+    <a-entity
+      id="ship-display"
+      gps-new-entity-place="latitude: 52.1073889; longitude: 1.3568889"
+      gltf-model="#ship-model"
+      position="0 15 0"
+      rotation="210 0 0"
+      scale="0.1 0.1 0.1"
+      animation="property: position; from: -0.5 15 0; to: 0.5 15 0; dir: alternate; loop: true; dur: 5000; easing: easeInOutSine"
+    ></a-entity>
+
+  </a-scene>
+
+  <script>
+    const TARGET_LAT = 52.1073889;
+    const TARGET_LON = 1.3568889;
+
+    const status = document.querySelector("#status");
+
+    function distanceMetres(lat1, lon1, lat2, lon2) {
+      const R = 6371000;
+      const toRad = deg => deg * Math.PI / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const accuracy = Math.round(position.coords.accuracy || 0);
+          const distance = Math.round(distanceMetres(lat, lon, TARGET_LAT, TARGET_LON));
+
+          status.textContent =
+            "GPS active. Accuracy about " + accuracy + "m. Target about " + distance + "m away. Slowly turn around.";
+        },
+        error => {
+          status.textContent = "Location problem: " + error.message;
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 15000
+        }
+      );
+    } else {
+      status.textContent = "This browser does not support geolocation.";
+    }
+  </script>
+</body>
+</html>
