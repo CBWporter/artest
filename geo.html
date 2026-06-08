@@ -55,10 +55,8 @@
 <body>
   <div id="status">Starting geolocated AR...</div>
 
-  <div id="instructions">
-    <strong>GEO SUTTON HOO SHIP — v001</strong>
-    Uses Shiptextured.glb. Target: 52.1073889, 1.3568889. Height: 15m.
-  </div>
+  <div id="instructions" style="display: none;"></div>
+   
 
   <a-scene
     embedded
@@ -75,11 +73,11 @@
          <a-box
         id="geo-test-box"
         gps-new-entity-place="latitude: 52.1073889; longitude: 1.3568889"
-        position="0 2 0"
+        position="0 0 0"
         color="red"
-        depth="5"
-        height="5"
-        width="5"
+        depth="10"
+        height="10"
+        width="10"
       ></a-box>
    
   </a-scene>
