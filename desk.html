@@ -34,30 +34,38 @@
 <body>
   <div id="status">Desk test: loading Shiptextured.glb</div>
 
-  <a-scene
-    embedded
-    vr-mode-ui="enabled: false"
-    renderer="antialias: true; alpha: true;"
-  >
-    <a-assets>
-      <a-asset-item id="ship-model" src="./Shiptextured.glb"></a-asset-item>
-    </a-assets>
+ <a-scene
+  embedded
+  vr-mode-ui="enabled: false"
+  renderer="antialias: true; alpha: true;"
+>
+  <a-assets>
+    <a-asset-item id="ship-model" src="./Shiptextured.glb"></a-asset-item>
+  </a-assets>
 
-    <a-light type="ambient" intensity="1.2"></a-light>
-    <a-light type="directional" position="2 4 3" intensity="1"></a-light>
+  <a-light type="ambient" intensity="2"></a-light>
+  <a-light type="directional" position="2 4 3" intensity="1.5"></a-light>
 
-   <a-entity
-      id="ship-display"
-      gltf-model="#ship-model"
-      position="0 0 -3"
-      rotation="210 0 0"
-      scale="2 2 2"
-    ></a-entity>
-    
-    
-    
-       <a-camera position="0 0 0"></a-camera>
-  </a-scene>
+  <!-- Red reference box: if you see this, the 3D scene is working -->
+  <a-box
+    position="0 0 -3"
+    color="red"
+    width="0.5"
+    height="0.5"
+    depth="0.5"
+  ></a-box>
+
+  <!-- Ship placed behind the red box, very large for visibility -->
+  <a-entity
+    id="ship-display"
+    gltf-model="#ship-model"
+    position="0 0 -5"
+    rotation="0 0 0"
+    scale="10 10 10"
+  ></a-entity>
+
+  <a-camera position="0 0 0"></a-camera>
+</a-scene>
 
   <script>
     const status = document.querySelector("#status");
