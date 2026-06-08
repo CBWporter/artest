@@ -72,16 +72,16 @@
 
     <a-camera gps-new-camera="gpsMinDistance: 1"></a-camera>
 
-    <a-entity
-      id="ship-display"
-      gps-new-entity-place="latitude: 52.1073889; longitude: 1.3568889"
-      gltf-model="#ship-model"
-      position="0 15 0"
-      rotation="210 0 0"
-      scale="10 10 10"
-      animation="property: position; from: -0.5 15 0; to: 0.5 15 0; dir: alternate; loop: true; dur: 5000; easing: easeInOutSine"
-    ></a-entity>
-
+         <a-box
+        id="geo-test-box"
+        gps-new-entity-place="latitude: 52.1073889; longitude: 1.3568889"
+        position="0 2 0"
+        color="red"
+        depth="5"
+        height="5"
+        width="5"
+      ></a-box>
+   
   </a-scene>
 
   <script>
