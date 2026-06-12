@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sutton Hoo Ship AR Demo</title>
+
+  <!-- Google model-viewer: web 3D viewer + markerless AR launcher -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --panel: #ffffff;
+      --text: #222222;
+      --muted: #5f5f5f;
+      --button: #1f1f1f;
+      --button-text: #ffffff;
+      --accent: #8a5a2b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 18px 16px 10px;
+      text-align: center;
+      background: var(--panel);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.45rem, 5vw, 2.2rem);
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    model-viewer {
+      display: block;
+      width: 100vw;
+      height: 72vh;
+      min-height: 430px;
+      background: linear-gradient(180deg, #d9d5ca 0%, #eee8dc 100%);
+    }
+
+    .ar-button {
+      background: var(--button);
+      color: var(--button-text);
+      border: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .ar-button:active {
+      transform: translateY(1px);
+    }
+
+    .ar-button[slot="ar-button"] {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+    }
+
+    .poster-note {
+      padding: 14px 16px 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .info {
+      max-width: 780px;
+      margin: 18px auto 32px;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .card ol {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.55;
+    }
+
+    .small-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    @media (max-width: 620px) {
+      model-viewer {
+        height: 68vh;
+        min-height: 360px;
+      }
+
+      .ar-button[slot="ar-button"] {
+        width: calc(100% - 36px);
+        max-width: 360px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Place the Sutton Hoo Ship in your room</h1>
+    <p class="subtitle">
+      Tap the AR button, scan the floor with your phone, then position the ship model in your space.
+    </p>
+  </header>
+
+  <main>
+    <model-viewer
+      id="ship-viewer"
+      src="Shiptextured.glb"
+      alt="Textured 3D model of the Sutton Hoo ship"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      ar-placement="floor"
+      ar-scale="auto"
+      camera-controls
+      touch-action="pan-y"
+      auto-rotate
+      shadow-intensity="1"
+      exposure="1"
+      environment-image="neutral">
+
+      <button class="ar-button" slot="ar-button">
+        View in your space
+      </button>
+
+      <div class="poster-note" slot="poster">
+        Loading the Sutton Hoo ship model...
+      </div>
+
+    </model-viewer>
+
+    <section class="info">
+      <div class="card">
+        <h2>How to use this demo</h2>
+        <ol>
+          <li>Open this page on a phone that supports AR.</li>
+          <li>Tap <strong>View in your space</strong>.</li>
+          <li>Move your phone slowly to scan the floor.</li>
+          <li>Tap to place the ship.</li>
+          <li>Walk around it, rotate it, or scale it if your device allows.</li>
+        </ol>
+        <p class="small-note">
+          This page uses <code>Shiptextured.glb</code>. For iPhone/iPad AR, you may also need a matching <code>.usdz</code> file later.
+        </p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
