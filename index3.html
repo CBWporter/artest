@@ -136,16 +136,17 @@
 
   <main>
     <div class="viewer-wrap">
-      <model-viewer
+    <!-- camera-orbit removed for testing: camera-orbit="90deg 70deg auto" -->
+
+<model-viewer
   src="Shiptextured.glb"
   alt="Sutton Hoo ship AR model"
   ar
   ar-modes="webxr scene-viewer quick-look"
   ar-placement="floor"
   ar-scale="auto"
-  orientation="0deg 0deg 0deg"
+  orientation="90deg 0deg 0deg"
   camera-controls
- <!-- camera-orbit="90deg 70deg auto" -->
   touch-action="pan-y"
   shadow-intensity="1"
   exposure="1">
