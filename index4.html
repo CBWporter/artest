@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Saxon Warrior AR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+  <!-- A-Frame, AR.js and animation support for animated GLB files -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@7.5.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #000;
+    }
+
+    #info-panel {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 10;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.35;
+      pointer-events: none;
+    }
+
+    #info-panel strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 3px;
+    }
+
+    #status {
+      opacity: 0.88;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="info-panel">
+    <strong>Saxon Warrior</strong>
+    <span id="status">Point your camera at the marker to view the animated Saxon warrior with sword.</span>
+  </div>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true; antialias: true; alpha: true"
+    arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
+
+    <a-assets>
+      <!-- Keep Warrior-anim.glb in the same folder as this index4.html file -->
+      <a-asset-item id="warrior-model" src="Warrior-anim.glb"></a-asset-item>
+    </a-assets>
+
+    <!-- Standard Hiro marker. Replace preset='hiro' with your custom marker if required. -->
+    <a-marker preset="hiro" id="warrior-marker">
+
+      <!--
+        Rotation is set to -90 on X so the warrior is shown front-on to the AR camera,
+        rather than being viewed from above at an oblique angle on the marker plane.
+      -->
+      <a-entity
+        id="saxon-warrior"
+        gltf-model="#warrior-model"
+        position="0 0.02 0"
+        rotation="-90 0 0"
+        scale="0.45 0.45 0.45"
+        animation-mixer="clip: *; loop: repeat; timeScale: 1">
+      </a-entity>
+
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    const marker = document.querySelector("#warrior-marker");
+    const statusText = document.querySelector("#status");
+
+    marker.addEventListener("markerFound", () => {
+      statusText.textContent = "Animated Saxon warrior detected.";
+    });
+
+    marker.addEventListener("markerLost", () => {
+      statusText.textContent = "Point your camera at the marker to view the animated Saxon warrior with sword.";
+    });
+  </script>
+</body>
+</html>
