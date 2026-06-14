@@ -154,17 +154,22 @@
     }
 
     mainButton.addEventListener("click", async () => {
-      if (mode === "listen") {
-        await toggleAudio();
-        return;
-      }
+  if (mode === "listen") {
+    await toggleAudio();
+    return;
+  }
 
-      try {
-        await viewer.activateAR();
-      } catch (error) {
-        panel.innerHTML = "<strong>Saxon Warrior</strong>AR could not start on this browser. Chrome on Android is best for the in-room overlay button; iPhone Quick Look cannot keep the webpage button over the AR view.";
-      }
-    });
+  try {
+    // Start the warrior voice from the same user tap that launches AR.
+    // This gives the audio the best chance of continuing when the room viewer opens.
+    warriorAudio.currentTime = 0;
+    await warriorAudio.play();
+
+    await viewer.activateAR();
+  } catch (error) {
+    panel.innerHTML = "<strong>Saxon Warrior</strong>AR or audio could not start. Check that Saxonvoice.mp4 is in the same folder as this page, and try Chrome on Android or Safari on iPhone.";
+  }
+});
 
     viewer.addEventListener("load", () => {
       const clips = viewer.availableAnimations || [];
