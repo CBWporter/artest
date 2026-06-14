@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Saxon Warrior Room AR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Markerless room-placement AR using model-viewer. No Hiro marker. No AR.js. -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #111;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #3a3a3a 0%, #151515 70%);
+    }
+
+    #info-panel {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 10;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.35;
+      pointer-events: none;
+    }
+
+    #info-panel strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 3px;
+    }
+
+    #audio-button {
+      position: fixed;
+      left: 12px;
+      bottom: 92px;
+      z-index: 20;
+      background: #fff;
+      border: 0;
+      border-radius: 8px;
+      color: #111;
+      font-weight: bold;
+      padding: 10px 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    #ar-button {
+      background: #fff;
+      border: 0;
+      border-radius: 8px;
+      color: #111;
+      font-weight: bold;
+      padding: 10px 14px;
+      position: absolute;
+      right: 16px;
+      bottom: 92px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    }
+  </style>
+</head>
+
+<body>
+  <model-viewer
+    id="warrior-viewer"
+    src="Warrior-anim.glb"
+    ios-src="Warrior-anim.usdz"
+    alt="Animated Saxon warrior with sword"
+    camera-controls
+    autoplay
+    ar
+    ar-modes="quick-look scene-viewer webxr"
+    ar-placement="floor"
+    ar-scale="auto"
+    shadow-intensity="1"
+    exposure="1"
+    environment-image="neutral"
+    camera-orbit="0deg 75deg 4m"
+    field-of-view="30deg">
+
+    <button slot="ar-button" id="ar-button">
+      View Saxon Warrior in your room
+    </button>
+  </model-viewer>
+
+  <button id="audio-button">Play Saxon Warrior Voice</button>
+
+  <audio id="warrior-audio" preload="auto">
+    <source src="Saxonvoice.mp4" type="audio/mp4">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="info-panel">
+    <strong>Saxon Warrior</strong>
+    Tap the AR button to place the Saxon warrior with sword in your room. Tap the voice button to hear the warrior narration.
+  </div>
+
+  <script>
+    const viewer = document.querySelector("#warrior-viewer");
+    const panel = document.querySelector("#info-panel");
+    const audioButton = document.querySelector("#audio-button");
+    const warriorAudio = document.querySelector("#warrior-audio");
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    const glbFile = "Warrior-anim.glb";
+    const usdzFile = "Warrior-anim.usdz";
+
+    viewer.src = glbFile;
+
+    if (isIOS) {
+      viewer.setAttribute("ios-src", usdzFile);
+      viewer.setAttribute("ar-modes", "quick-look");
+      panel.innerHTML = "<strong>Saxon Warrior</strong>iPhone/iPad detected. Tap the AR button to open the USDZ model in Apple AR Quick Look. Tap the voice button to hear the narration.";
+    } else {
+      viewer.removeAttribute("ios-src");
+      viewer.setAttribute("ar-modes", "scene-viewer webxr");
+      panel.innerHTML = "<strong>Saxon Warrior</strong>Tap the AR button to place the animated GLB Saxon warrior with sword in your room. Tap the voice button to hear the narration.";
+    }
+
+    viewer.addEventListener("load", () => {
+      const clips = viewer.availableAnimations || [];
+      if (clips.length > 0) {
+        viewer.animationName = clips[0];
+        viewer.play();
+      }
+    });
+
+    audioButton.addEventListener("click", async () => {
+      try {
+        if (warriorAudio.paused) {
+          await warriorAudio.play();
+          audioButton.textContent = "Pause Saxon Warrior Voice";
+        } else {
+          warriorAudio.pause();
+          audioButton.textContent = "Play Saxon Warrior Voice";
+        }
+      } catch (error) {
+        panel.innerHTML = "<strong>Saxon Warrior</strong>Audio could not start. Check that Saxonvoice.mp4 is in the same folder as index4.html.";
+      }
+    });
+
+    warriorAudio.addEventListener("ended", () => {
+      audioButton.textContent = "Play Saxon Warrior Voice";
+    });
+
+    viewer.addEventListener("ar-status", (event) => {
+      if (event.detail.status === "session-started") {
+        panel.innerHTML = "<strong>Saxon Warrior</strong>Move your phone to find the floor, then tap to place the Saxon warrior. The voice button remains on the webpage.";
+      }
+
+      if (event.detail.status === "not-presenting") {
+        if (isIOS) {
+          panel.innerHTML = "<strong>Saxon Warrior</strong>iPhone/iPad detected. Tap the AR button to open the USDZ model in Apple AR Quick Look. Tap the voice button to hear the narration.";
+        } else {
+          panel.innerHTML = "<strong>Saxon Warrior</strong>Tap the AR button to place the animated GLB Saxon warrior with sword in your room. Tap the voice button to hear the narration.";
+        }
+      }
+
+      if (event.detail.status === "failed") {
+        panel.innerHTML = "<strong>Saxon Warrior</strong>AR could not start on this device/browser. Try Safari on iPhone or Chrome on Android.";
+      }
+    });
+  </script>
+</body>
+</html>
