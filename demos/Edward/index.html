@@ -96,7 +96,7 @@
 
   <button id="audio-button">Listen to Eirik</button>
 
-  <audio id="basil-audio" preload="auto">
+  <audio id="Edward-audio" preload="auto">
     <source src="./Edward.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
@@ -106,37 +106,37 @@
     Use your mouse or finger to rotate the model. Tap “Listen to Eirik” to hear the introduction.
   </div>
 
-  <script>
-    const viewer = document.querySelector("#Eirik-viewer");
-    const audioButton = document.querySelector("#audio-button");
-    const basilAudio = document.querySelector("#Edward-audio");
+ <script>
+  const viewer = document.querySelector("#Eirik-viewer");
+  const audioButton = document.querySelector("#audio-button");
+  const edwardAudio = document.querySelector("#Edward-audio");
 
-    viewer.addEventListener("load", () => {
-      const clips = viewer.availableAnimations || [];
-      if (clips.length > 0) {
-        viewer.animationName = clips[0];
-        viewer.play();
+  viewer.addEventListener("load", () => {
+    const clips = viewer.availableAnimations || [];
+    if (clips.length > 0) {
+      viewer.animationName = clips[0];
+      viewer.play();
+    }
+  });
+
+  audioButton.addEventListener("click", async () => {
+    try {
+      if (edwardAudio.paused) {
+        await edwardAudio.play();
+        audioButton.textContent = "Pause Eirik";
+      } else {
+        edwardAudio.pause();
+        audioButton.textContent = "Listen to Eirik";
       }
-    });
+    } catch (error) {
+      audioButton.textContent = "Audio unavailable";
+      console.error("Audio playback failed:", error);
+    }
+  });
 
-    audioButton.addEventListener("click", async () => {
-      try {
-        if (basilAudio.paused) {
-          await basilAudio.play();
-          audioButton.textContent = "Pause Eirik";
-        } else {
-          basilAudio.pause();
-          audioButton.textContent = "Listen to Eirik";
-        }
-      } catch (error) {
-        audioButton.textContent = "Audio unavailable";
-        console.error("Audio playback failed:", error);
-      }
-    });
-
-    basilAudio.addEventListener("ended", () => {
-      audioButton.textContent = "Listen to Eirik";
-    });
-  </script>
+  edwardAudio.addEventListener("ended", () => {
+    audioButton.textContent = "Listen to Eirik";
+  });
+</script>
 </body>
 </html>
