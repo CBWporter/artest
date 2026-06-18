@@ -5,7 +5,7 @@
   <title>Eirik Ironhand Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Standard model-viewer page. No AR room placement. -->
+  <!-- model-viewer page with normal desktop viewing plus mobile room AR launch. -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
   <style>
@@ -24,26 +24,48 @@
       background: radial-gradient(circle at center, #3a3a3a 0%, #151515 70%);
     }
 
-    #audio-button {
+    #top-controls {
       position: fixed;
       left: 16px;
       top: 16px;
       z-index: 9999;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: calc(100% - 32px);
+    }
+
+    .control-button {
       background: #fff;
       border: 0;
       border-radius: 12px;
       color: #111;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
-      padding: 18px 24px;
-      min-width: 190px;
-      min-height: 56px;
+      padding: 16px 22px;
+      min-width: 160px;
+      min-height: 54px;
       cursor: pointer;
       box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
     }
 
-    #audio-button:active {
+    .control-button:active {
       transform: translateY(1px);
+    }
+
+    #status-panel {
+      position: fixed;
+      left: 16px;
+      top: 92px;
+      z-index: 9999;
+      max-width: 380px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.35;
+      display: none;
     }
 
     #info-panel {
@@ -67,12 +89,25 @@
       margin-bottom: 3px;
     }
 
-    @media (max-width: 480px) {
-      #audio-button {
-        font-size: 18px;
-        padding: 16px 22px;
-        min-width: 180px;
-        min-height: 56px;
+    @media (max-width: 520px) {
+      #top-controls {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+      }
+
+      .control-button {
+        font-size: 16px;
+        padding: 14px 16px;
+        min-width: 145px;
+        min-height: 52px;
+      }
+
+      #status-panel {
+        left: 10px;
+        right: 10px;
+        top: 130px;
+        max-width: none;
       }
     }
   </style>
@@ -81,8 +116,8 @@
 <body>
   <model-viewer
     id="Eirik-viewer"
-    src="./Edward.glb"
-    alt="Eirik Ironhand animated character"
+    src="./Edward.glb?v=4"
+    alt="Eirik Ironhand animated Viking character"
     camera-controls
     autoplay
     reveal="auto"
@@ -90,9 +125,23 @@
     shadow-intensity="1"
     exposure="1"
     environment-image="neutral"
-   </model-viewer>
+    ar
+    ar-modes="scene-viewer quick-look webxr"
+    ar-scale="auto"
+    ar-placement="floor">
 
-  <button id="audio-button">Listen to Eirik</button>
+    <!-- This is the native model-viewer AR button. It launches room AR on supported mobile devices. -->
+    <button slot="ar-button" class="control-button">
+      View in Your Room
+    </button>
+  </model-viewer>
+
+  <div id="top-controls">
+    <button id="audio-button" class="control-button">Listen to Eirik</button>
+    <button id="room-ar-button" class="control-button">View in Your Room</button>
+  </div>
+
+  <div id="status-panel"></div>
 
   <audio id="Edward-audio" preload="auto">
     <source src="./Edward.mp3" type="audio/mpeg">
@@ -101,13 +150,20 @@
 
   <div id="info-panel">
     <strong>Eirik Ironhand</strong>
-    Use your mouse or finger to rotate the model. Tap “Listen to Eirik” to hear the introduction.
+    Use your mouse or finger to rotate the model. Tap “Listen to Eirik” to hear the introduction. On a compatible phone, tap “View in Your Room” to place the model in your space.
   </div>
 
   <script>
     const viewer = document.querySelector("#Eirik-viewer");
     const audioButton = document.querySelector("#audio-button");
+    const roomArButton = document.querySelector("#room-ar-button");
+    const statusPanel = document.querySelector("#status-panel");
     const edwardAudio = document.querySelector("#Edward-audio");
+
+    function showStatus(message) {
+      statusPanel.textContent = message;
+      statusPanel.style.display = "block";
+    }
 
     viewer.addEventListener("load", () => {
       const clips = viewer.availableAnimations || [];
@@ -115,6 +171,10 @@
         viewer.animationName = clips[0];
         viewer.play();
       }
+    });
+
+    viewer.addEventListener("error", () => {
+      showStatus("The model did not load. Check that Edward.glb is in the same folder as this index.html file and that the file is a valid GLB.");
     });
 
     audioButton.addEventListener("click", async () => {
@@ -128,12 +188,26 @@
         }
       } catch (error) {
         audioButton.textContent = "Audio unavailable";
+        showStatus("Audio could not be played. Check that Edward.mp3 is in the same folder as this index.html file.");
         console.error("Audio playback failed:", error);
       }
     });
 
     edwardAudio.addEventListener("ended", () => {
       audioButton.textContent = "Listen to Eirik";
+    });
+
+    roomArButton.addEventListener("click", async () => {
+      try {
+        if (typeof viewer.activateAR === "function") {
+          await viewer.activateAR();
+        } else {
+          showStatus("Room AR is not available in this browser. Open this page on a compatible Android or iPhone device.");
+        }
+      } catch (error) {
+        showStatus("Room AR is not available on this device/browser. Open this page on a compatible Android or iPhone device.");
+        console.error("Room AR launch failed:", error);
+      }
     });
   </script>
 </body>
