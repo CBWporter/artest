@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Basil Brown Viewer</title>
+  <title>Eirik Ironhand Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Standard model-viewer page. No AR room placement. -->
@@ -80,9 +80,9 @@
 
 <body>
   <model-viewer
-    id="basil-viewer"
-    src="./Basil.glb"
-    alt="Basil Brown animated character"
+    id="Eirik-viewer"
+    src="./Edward.glb"
+    alt="Eirik Ironhand animated character"
     camera-controls
     autoplay
     reveal="auto"
@@ -94,22 +94,22 @@
     field-of-view="30deg">
   </model-viewer>
 
-  <button id="audio-button">Listen to Basil</button>
+  <button id="audio-button">Listen to Eirik</button>
 
   <audio id="basil-audio" preload="auto">
-    <source src="./BasilIntro.mp3" type="audio/mpeg">
+    <source src="./Edward.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
   <div id="info-panel">
-    <strong>Basil Brown</strong>
-    Use your mouse or finger to rotate the model. Tap “Listen to Basil” to hear the introduction.
+    <strong>Eirik Ironhand</strong>
+    Use your mouse or finger to rotate the model. Tap “Listen to Eirik” to hear the introduction.
   </div>
 
   <script>
-    const viewer = document.querySelector("#basil-viewer");
+    const viewer = document.querySelector("#Eirik-viewer");
     const audioButton = document.querySelector("#audio-button");
-    const basilAudio = document.querySelector("#basil-audio");
+    const basilAudio = document.querySelector("#Edward-audio");
 
     viewer.addEventListener("load", () => {
       const clips = viewer.availableAnimations || [];
@@ -123,10 +123,10 @@
       try {
         if (basilAudio.paused) {
           await basilAudio.play();
-          audioButton.textContent = "Pause Basil";
+          audioButton.textContent = "Pause Eirik";
         } else {
           basilAudio.pause();
-          audioButton.textContent = "Listen to Basil";
+          audioButton.textContent = "Listen to Eirik";
         }
       } catch (error) {
         audioButton.textContent = "Audio unavailable";
@@ -135,7 +135,7 @@
     });
 
     basilAudio.addEventListener("ended", () => {
-      audioButton.textContent = "Listen to Basil";
+      audioButton.textContent = "Listen to Eirik";
     });
   </script>
 </body>
