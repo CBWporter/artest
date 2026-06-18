@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Eirik Ironhand Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Standard model-viewer page with optional AR launch support. -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #111;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #3a3a3a 0%, #151515 70%);
+    }
+
+    #top-controls {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 9999;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: calc(100% - 32px);
+    }
+
+    .control-button {
+      background: #fff;
+      border: 0;
+      border-radius: 12px;
+      color: #111;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 16px 22px;
+      min-width: 160px;
+      min-height: 54px;
+      cursor: pointer;
+      box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .control-button:active {
+      transform: translateY(1px);
+    }
+
+    #status-panel {
+      position: fixed;
+      left: 16px;
+      top: 92px;
+      z-index: 9999;
+      max-width: 360px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.35;
+      display: none;
+    }
+
+    #info-panel {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 10;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.35;
+      pointer-events: none;
+    }
+
+    #info-panel strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 520px) {
+      #top-controls {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+      }
+
+      .control-button {
+        font-size: 16px;
+        padding: 14px 16px;
+        min-width: 145px;
+        min-height: 52px;
+      }
+
+      #status-panel {
+        left: 10px;
+        right: 10px;
+        top: 130px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <model-viewer
+    id="Eirik-viewer"
+    src="./Edward.glb?v=3"
+    alt="Eirik Ironhand animated Viking character"
+    camera-controls
+    autoplay
+    reveal="auto"
+    loading="eager"
+    shadow-intensity="1"
+    exposure="1"
+    environment-image="neutral"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-scale="auto"
+    ar-placement="floor">
+
+    <!-- Native model-viewer AR button. It appears only where AR is supported. -->
+    <button slot="ar-button" class="control-button">
+      Launch AR
+    </button>
+  </model-viewer>
+
+  <div id="top-controls">
+    <button id="audio-button" class="control-button">Listen to Eirik</button>
+    <button id="ar-button" class="control-button">Launch AR</button>
+    <a id="model-link" class="control-button" href="./Edward.glb?v=3" target="_blank" rel="noopener" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">
+      Open GLB
+    </a>
+  </div>
+
+  <div id="status-panel"></div>
+
+  <audio id="Edward-audio" preload="auto">
+    <source src="./Edward.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="info-panel">
+    <strong>Eirik Ironhand</strong>
+    Use your mouse or finger to rotate the model. Tap "Listen to Eirik" to hear the introduction. Use "Launch AR" on AR-capable devices; on desktop, use "Open GLB" as the fallback test.
+  </div>
+
+  <script>
+    const viewer = document.querySelector("#Eirik-viewer");
+    const audioButton = document.querySelector("#audio-button");
+    const arButton = document.querySelector("#ar-button");
+    const statusPanel = document.querySelector("#status-panel");
+    const edwardAudio = document.querySelector("#Edward-audio");
+
+    function showStatus(message) {
+      statusPanel.textContent = message;
+      statusPanel.style.display = "block";
+    }
+
+    viewer.addEventListener("load", () => {
+      const clips = viewer.availableAnimations || [];
+      if (clips.length > 0) {
+        viewer.animationName = clips[0];
+        viewer.play();
+      }
+    });
+
+    viewer.addEventListener("error", () => {
+      showStatus("The model did not load. Check that Edward.glb is in the same folder as this index.html file and that the file is a valid GLB.");
+    });
+
+    audioButton.addEventListener("click", async () => {
+      try {
+        if (edwardAudio.paused) {
+          await edwardAudio.play();
+          audioButton.textContent = "Pause Eirik";
+        } else {
+          edwardAudio.pause();
+          audioButton.textContent = "Listen to Eirik";
+        }
+      } catch (error) {
+        audioButton.textContent = "Audio unavailable";
+        showStatus("Audio could not be played. Check that Edward.mp3 is in the same folder as this index.html file.");
+        console.error("Audio playback failed:", error);
+      }
+    });
+
+    edwardAudio.addEventListener("ended", () => {
+      audioButton.textContent = "Listen to Eirik";
+    });
+
+    arButton.addEventListener("click", async () => {
+      try {
+        if (typeof viewer.activateAR === "function") {
+          await viewer.activateAR();
+          showStatus("AR launch requested. If nothing opens, this browser or device does not support model-viewer AR.");
+        } else {
+          showStatus("AR is not available in this browser. On desktop, use Open GLB to test the model, or open this page on an AR-capable phone.");
+        }
+      } catch (error) {
+        showStatus("AR is not available on this device/browser. On desktop, use Open GLB to test the model, or open this page on an AR-capable phone.");
+        console.error("AR launch failed:", error);
+      }
+    });
+  </script>
+</body>
+</html>
