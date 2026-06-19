@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Erik AR Viewer</title>
+
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f1ea;
+    }
+
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background: #f4f1ea;
+    }
+
+    .audio-panel {
+      position: fixed;
+      top: calc(14px + env(safe-area-inset-top));
+      left: calc(14px + env(safe-area-inset-left));
+      z-index: 10;
+      width: 172px;
+      padding: 10px 10px 11px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(8px);
+      text-align: left;
+    }
+
+    .audio-title {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1f1f1f;
+      letter-spacing: 0.2px;
+      line-height: 1.15;
+    }
+
+    .language-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 7px;
+    }
+
+    .language-button {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      width: 100%;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 999px;
+      background: #111;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .language-button img {
+      width: 23px;
+      height: 16px;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+      flex: 0 0 auto;
+    }
+
+    .language-button.is-playing {
+      background: #2f5d3a;
+    }
+
+    .language-button:active {
+      transform: scale(0.98);
+    }
+
+    .language-button span.status {
+      font-weight: 400;
+      opacity: 0.86;
+    }
+
+    model-viewer::part(default-ar-button) {
+      bottom: 24px;
+      right: 16px;
+    }
+
+    @media (min-width: 560px) {
+      .audio-panel {
+        width: 180px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Change the src below if your GLB file has a different name. -->
+  <model-viewer
+    id="erikViewer"
+    src="Edward.glb"
+    alt="3D model of Erik"
+    camera-controls
+    touch-action="pan-y"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    shadow-intensity="1"
+    exposure="1"
+    auto-rotate
+    scale="1 1 1">
+  </model-viewer>
+
+  <div class="audio-panel" aria-label="Language audio controls">
+    <p class="audio-title">Listen to Erik</p>
+
+    <div class="language-buttons">
+      <button class="language-button" type="button" data-audio="Edward.mp3" data-language="English">
+        <img src="UKflag.jpg" alt="UK flag" />
+        <span>English</span>
+        <span class="status"></span>
+      </button>
+
+      <button class="language-button" type="button" data-audio="Dutch.mp3" data-language="Dutch">
+        <img src="Dutchflag.jpg" alt="Dutch flag" />
+        <span>Dutch</span>
+        <span class="status"></span>
+      </button>
+    </div>
+  </div>
+
+  <audio id="erikAudio" preload="auto"></audio>
+
+  <script>
+    const audio = document.getElementById('erikAudio');
+    const buttons = Array.from(document.querySelectorAll('.language-button'));
+
+    let currentButton = null;
+
+    function resetButtons() {
+      buttons.forEach((button) => {
+        button.classList.remove('is-playing');
+        const status = button.querySelector('.status');
+        if (status) status.textContent = '';
+      });
+    }
+
+    function markPlaying(button) {
+      resetButtons();
+      button.classList.add('is-playing');
+      const status = button.querySelector('.status');
+      if (status) status.textContent = 'Playing';
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', async () => {
+        const selectedAudio = button.dataset.audio;
+
+        if (currentButton === button && !audio.paused) {
+          audio.pause();
+          resetButtons();
+          currentButton = null;
+          return;
+        }
+
+        if (audio.src.indexOf(selectedAudio) === -1) {
+          audio.src = selectedAudio;
+          audio.currentTime = 0;
+        } else {
+          audio.currentTime = 0;
+        }
+
+        currentButton = button;
+
+        try {
+          await audio.play();
+          markPlaying(button);
+        } catch (error) {
+          resetButtons();
+          console.error('Audio could not be played:', error);
+        }
+      });
+    });
+
+    audio.addEventListener('ended', () => {
+      resetButtons();
+      currentButton = null;
+      audio.currentTime = 0;
+    });
+  </script>
+</body>
+</html>
