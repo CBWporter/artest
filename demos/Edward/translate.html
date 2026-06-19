@@ -14,13 +14,13 @@
       height: 100%;
       overflow: hidden;
       font-family: Arial, Helvetica, sans-serif;
-      background: #111;
+      background: #f4f0e8;
     }
 
     model-viewer {
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, #3a3a3a 0%, #151515 70%);
+      background: radial-gradient(circle at center, #f8f4ec 0%, #e2d8c8 72%);
     }
 
     #top-controls {
@@ -30,12 +30,12 @@
       z-index: 9999;
       display: flex;
       flex-direction: column;
-      align-items: stretch;
-      gap: 12px;
-      width: 280px;
+      align-items: flex-start;
+      gap: 8px;
+      width: auto;
       max-width: calc(100% - 32px);
-      padding: 16px 16px 18px;
-      border-radius: 22px;
+      padding: 10px 12px 12px;
+      border-radius: 16px;
       background: rgba(255, 255, 255, 0.92);
       box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
       backdrop-filter: blur(6px);
@@ -44,7 +44,7 @@
     #listen-label {
       margin: 0 0 2px;
       color: #222;
-      font-size: 26px;
+      font-size: 20px;
       line-height: 1.1;
       font-weight: 800;
       text-align: left;
@@ -53,28 +53,28 @@
     .language-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      width: 100%;
+      gap: 8px;
+      width: auto;
     }
 
     .control-button {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      gap: 12px;
-      width: 100%;
-      min-height: 56px;
-      padding: 12px 18px;
+      justify-content: center;
+      gap: 0;
+      width: 74px;
+      min-height: 48px;
+      padding: 8px 10px;
       border: 0;
-      border-radius: 28px;
+      border-radius: 24px;
       background: #111;
       color: #fff;
-      font-size: 21px;
+      font-size: 18px;
       font-weight: 800;
       line-height: 1;
       cursor: pointer;
       box-shadow: none;
-      text-align: left;
+      text-align: center;
     }
 
     .control-button:active {
@@ -87,20 +87,22 @@
     }
 
     .flag-icon {
-      width: 42px;
-      height: 28px;
+      width: 46px;
+      height: 31px;
       object-fit: cover;
       border-radius: 3px;
       flex: 0 0 auto;
     }
 
     #room-ar-button {
-      margin-top: 2px;
+      width: 100%;
+      min-height: 46px;
       justify-content: center;
-      background: #fff;
+      background: #f4f0e8;
       color: #111;
       border: 2px solid #111;
       font-size: 18px;
+      padding: 9px 14px;
     }
 
     /* This hides the native model-viewer AR slot button so only our visible button appears. */
@@ -128,54 +130,50 @@
       left: 12px;
       right: 12px;
       bottom: 12px;
-      z-index: 10;
-      padding: 12px 14px;
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.72);
-      color: #fff;
-      font-size: 14px;
-      line-height: 1.35;
-      pointer-events: none;
-    }
-
-    #info-panel strong {
-      display: block;
-      font-size: 17px;
-      margin-bottom: 3px;
+      z-index: 9999;
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      pointer-events: auto;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.22);
     }
 
     @media (max-width: 520px) {
       #top-controls {
         left: 10px;
         top: 10px;
-        width: 265px;
+        width: auto;
         max-width: calc(100% - 20px);
-        padding: 15px 16px 17px;
+        padding: 9px 10px 10px;
       }
 
       #listen-label {
-        font-size: 25px;
+        font-size: 19px;
       }
 
       .control-button {
-        min-height: 55px;
-        padding: 12px 17px;
-        font-size: 20px;
+        width: 68px;
+        min-height: 44px;
+        padding: 7px 9px;
+        font-size: 18px;
       }
 
       .flag-icon {
-        width: 40px;
-        height: 27px;
+        width: 44px;
+        height: 29px;
       }
 
       #room-ar-button {
+        width: 100%;
+        min-height: 44px;
+        padding: 8px 12px;
         font-size: 17px;
       }
 
       #status-panel {
         left: 10px;
         right: 10px;
-        top: 245px;
+        top: 170px;
         max-width: none;
       }
     }
@@ -208,16 +206,12 @@
     <div class="language-list">
       <button id="english-button" class="control-button language-button" data-audio="./Edward.mp3" data-language="English" type="button">
         <img class="flag-icon" src="./UKflag.jpg" alt="">
-        <span>English</span>
       </button>
 
       <button id="dutch-button" class="control-button language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button">
         <img class="flag-icon" src="./Dutchflag.jpg" alt="">
-        <span>Dutch</span>
       </button>
     </div>
-
-    <button id="room-ar-button" class="control-button" type="button">View in Your Room</button>
   </div>
 
   <div id="status-panel"></div>
@@ -228,8 +222,7 @@
   </audio>
 
   <div id="info-panel">
-    <strong>Eirik Ironhand</strong>
-    Use your mouse or finger to rotate the model. Choose English or Dutch to hear the introduction. On a compatible phone, tap “View in Your Room” to place the model in your space.
+    <button id="room-ar-button" class="control-button" type="button">View outside</button>
   </div>
 
   <script>
@@ -303,11 +296,11 @@
         if (typeof viewer.activateAR === "function") {
           await viewer.activateAR();
         } else {
-          showStatus("Room AR is not available in this browser. Open this page on a compatible Android or iPhone device.");
+          showStatus("AR view is not available in this browser. Open this page on a compatible Android or iPhone device.");
         }
       } catch (error) {
-        showStatus("Room AR is not available on this device/browser. Open this page on a compatible Android or iPhone device.");
-        console.error("Room AR launch failed:", error);
+        showStatus("AR view is not available on this device/browser. Open this page on a compatible Android or iPhone device.");
+        console.error("AR launch failed:", error);
       }
     });
   </script>
