@@ -1,209 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Erik AR Viewer</title>
+  <meta charset="utf-8">
+  <title>Eirik Ironhand Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
+    html, body {
       margin: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
       font-family: Arial, Helvetica, sans-serif;
-      background: #f4f1ea;
+      background: #111;
     }
 
     model-viewer {
-      width: 100vw;
-      height: 100vh;
-      background: #f4f1ea;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #3a3a3a 0%, #151515 70%);
     }
 
-    .audio-panel {
+    #top-controls {
       position: fixed;
-      top: calc(14px + env(safe-area-inset-top));
-      left: calc(14px + env(safe-area-inset-left));
-      z-index: 10;
-      width: 172px;
-      padding: 10px 10px 11px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.92);
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
-      backdrop-filter: blur(8px);
-      text-align: left;
-    }
-
-    .audio-title {
-      margin: 0 0 8px;
-      font-size: 15px;
-      font-weight: 700;
-      color: #1f1f1f;
-      letter-spacing: 0.2px;
-      line-height: 1.15;
-    }
-
-    .language-buttons {
+      left: 16px;
+      top: 16px;
+      z-index: 9999;
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 7px;
+      gap: 12px;
+      width: 280px;
+      max-width: calc(100% - 32px);
+      padding: 16px 16px 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(6px);
     }
 
-    .language-button {
+    #listen-label {
+      margin: 0 0 2px;
+      color: #222;
+      font-size: 26px;
+      line-height: 1.1;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    .language-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .control-button {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      gap: 8px;
+      gap: 12px;
       width: 100%;
-      min-height: 34px;
-      padding: 7px 10px;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      border-radius: 999px;
+      min-height: 56px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 28px;
       background: #111;
       color: #fff;
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 1;
       cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
+      box-shadow: none;
+      text-align: left;
     }
 
-    .language-button img {
-      width: 23px;
-      height: 16px;
+    .control-button:active {
+      transform: translateY(1px);
+    }
+
+    .control-button.playing {
+      outline: 3px solid rgba(17, 17, 17, 0.22);
+      background: #2b2b2b;
+    }
+
+    .flag-icon {
+      width: 42px;
+      height: 28px;
       object-fit: cover;
-      border-radius: 2px;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+      border-radius: 3px;
       flex: 0 0 auto;
     }
 
-    .language-button.is-playing {
-      background: #2f5d3a;
+    #room-ar-button {
+      margin-top: 2px;
+      justify-content: center;
+      background: #fff;
+      color: #111;
+      border: 2px solid #111;
+      font-size: 18px;
     }
 
-    .language-button:active {
-      transform: scale(0.98);
+    /* This hides the native model-viewer AR slot button so only our visible button appears. */
+    #native-ar-button {
+      display: none;
     }
 
-    .language-button span.status {
-      font-weight: 400;
-      opacity: 0.86;
+    #status-panel {
+      position: fixed;
+      left: 16px;
+      top: 250px;
+      z-index: 9999;
+      max-width: 380px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.35;
+      display: none;
     }
 
-    model-viewer::part(default-ar-button) {
-      bottom: 24px;
-      right: 16px;
+    #info-panel {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 10;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.35;
+      pointer-events: none;
     }
 
-    @media (min-width: 560px) {
-      .audio-panel {
-        width: 180px;
+    #info-panel strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 520px) {
+      #top-controls {
+        left: 10px;
+        top: 10px;
+        width: 265px;
+        max-width: calc(100% - 20px);
+        padding: 15px 16px 17px;
+      }
+
+      #listen-label {
+        font-size: 25px;
+      }
+
+      .control-button {
+        min-height: 55px;
+        padding: 12px 17px;
+        font-size: 20px;
+      }
+
+      .flag-icon {
+        width: 40px;
+        height: 27px;
+      }
+
+      #room-ar-button {
+        font-size: 17px;
+      }
+
+      #status-panel {
+        left: 10px;
+        right: 10px;
+        top: 245px;
+        max-width: none;
       }
     }
   </style>
 </head>
 
 <body>
-  <!-- Change the src below if your GLB file has a different name. -->
   <model-viewer
-    id="erikViewer"
-    src="Edward.glb"
-    alt="3D model of Erik"
+    id="Eirik-viewer"
+    src="./Edward.glb?v=5"
+    alt="Eirik Ironhand animated Viking character"
     camera-controls
-    touch-action="pan-y"
-    ar
-    ar-modes="webxr scene-viewer quick-look"
+    autoplay
+    reveal="auto"
+    loading="eager"
     shadow-intensity="1"
     exposure="1"
-    auto-rotate
-    autoplay
-    animation-crossfade-duration="300"
-    scale="1 1 1">
+    environment-image="neutral"
+    ar
+    ar-modes="scene-viewer quick-look webxr"
+    ar-scale="auto"
+    ar-placement="floor">
+
+    <button id="native-ar-button" slot="ar-button" aria-hidden="true"></button>
   </model-viewer>
 
-  <div class="audio-panel" aria-label="Language audio controls">
-    <p class="audio-title">Listen to Erik</p>
+  <div id="top-controls" aria-label="Audio language controls">
+    <h1 id="listen-label">Listen to Erik</h1>
 
-    <div class="language-buttons">
-      <button class="language-button" type="button" data-audio="Edward.mp3" data-language="English">
-        <img src="UKflag.jpg" alt="UK flag" />
+    <div class="language-list">
+      <button id="english-button" class="control-button language-button" data-audio="./Edward.mp3" data-language="English" type="button">
+        <img class="flag-icon" src="./UKflag.jpg" alt="">
         <span>English</span>
-        <span class="status"></span>
       </button>
 
-      <button class="language-button" type="button" data-audio="Dutch.mp3" data-language="Dutch">
-        <img src="Dutchflag.jpg" alt="Dutch flag" />
+      <button id="dutch-button" class="control-button language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button">
+        <img class="flag-icon" src="./Dutchflag.jpg" alt="">
         <span>Dutch</span>
-        <span class="status"></span>
       </button>
     </div>
+
+    <button id="room-ar-button" class="control-button" type="button">View in Your Room</button>
   </div>
 
-  <audio id="erikAudio" preload="auto"></audio>
+  <div id="status-panel"></div>
+
+  <audio id="narration-audio" preload="auto">
+    <source src="./Edward.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="info-panel">
+    <strong>Eirik Ironhand</strong>
+    Use your mouse or finger to rotate the model. Choose English or Dutch to hear the introduction. On a compatible phone, tap “View in Your Room” to place the model in your space.
+  </div>
 
   <script>
-    const audio = document.getElementById('erikAudio');
-    const buttons = Array.from(document.querySelectorAll('.language-button'));
+    const viewer = document.querySelector("#Eirik-viewer");
+    const languageButtons = document.querySelectorAll(".language-button");
+    const roomArButton = document.querySelector("#room-ar-button");
+    const statusPanel = document.querySelector("#status-panel");
+    const narrationAudio = document.querySelector("#narration-audio");
 
-    let currentButton = null;
+    let currentLanguageButton = null;
 
-    function resetButtons() {
-      buttons.forEach((button) => {
-        button.classList.remove('is-playing');
-        const status = button.querySelector('.status');
-        if (status) status.textContent = '';
+    function showStatus(message) {
+      statusPanel.textContent = message;
+      statusPanel.style.display = "block";
+    }
+
+    function clearPlayingState() {
+      languageButtons.forEach((button) => {
+        button.classList.remove("playing");
       });
     }
 
-    function markPlaying(button) {
-      resetButtons();
-      button.classList.add('is-playing');
-      const status = button.querySelector('.status');
-      if (status) status.textContent = 'Playing';
-    }
+    viewer.addEventListener("load", () => {
+      const clips = viewer.availableAnimations || [];
+      if (clips.length > 0) {
+        viewer.animationName = clips[0];
+        viewer.play();
+      }
+    });
 
-    buttons.forEach((button) => {
-      button.addEventListener('click', async () => {
-        const selectedAudio = button.dataset.audio;
+    viewer.addEventListener("error", () => {
+      showStatus("The model did not load. Check that Edward.glb is in the same folder as this HTML file and that the file is a valid GLB.");
+    });
 
-        if (currentButton === button && !audio.paused) {
-          audio.pause();
-          resetButtons();
-          currentButton = null;
-          return;
-        }
-
-        if (audio.src.indexOf(selectedAudio) === -1) {
-          audio.src = selectedAudio;
-          audio.currentTime = 0;
-        } else {
-          audio.currentTime = 0;
-        }
-
-        currentButton = button;
+    languageButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const audioSrc = button.dataset.audio;
+        const language = button.dataset.language;
 
         try {
-          await audio.play();
-          markPlaying(button);
+          if (currentLanguageButton === button && !narrationAudio.paused) {
+            narrationAudio.pause();
+            clearPlayingState();
+            return;
+          }
+
+          if (currentLanguageButton !== button) {
+            narrationAudio.pause();
+            narrationAudio.src = audioSrc;
+            narrationAudio.currentTime = 0;
+            currentLanguageButton = button;
+          }
+
+          await narrationAudio.play();
+          clearPlayingState();
+          button.classList.add("playing");
         } catch (error) {
-          resetButtons();
-          console.error('Audio could not be played:', error);
+          clearPlayingState();
+          showStatus("Audio could not be played. Check that " + audioSrc.replace("./", "") + " is in the same folder as this HTML file.");
+          console.error(language + " audio playback failed:", error);
         }
       });
     });
 
-    audio.addEventListener('ended', () => {
-      resetButtons();
-      currentButton = null;
-      audio.currentTime = 0;
+    narrationAudio.addEventListener("ended", () => {
+      clearPlayingState();
+    });
+
+    roomArButton.addEventListener("click", async () => {
+      try {
+        if (typeof viewer.activateAR === "function") {
+          await viewer.activateAR();
+        } else {
+          showStatus("Room AR is not available in this browser. Open this page on a compatible Android or iPhone device.");
+        }
+      } catch (error) {
+        showStatus("Room AR is not available on this device/browser. Open this page on a compatible Android or iPhone device.");
+        console.error("Room AR launch failed:", error);
+      }
     });
   </script>
 </body>
