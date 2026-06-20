@@ -14,20 +14,19 @@
       height: 100%;
       overflow: hidden;
       font-family: Arial, Helvetica, sans-serif;
-      background: #000;
+      background: #f4f0e8;
     }
 
     body {
       position: relative;
     }
 
-    /* Background slideshow */
     #background-stage {
       position: fixed;
       inset: 0;
       z-index: 1;
       overflow: hidden;
-      background: #111;
+      background: #f4f0e8;
     }
 
     .bg-slide {
@@ -57,11 +56,16 @@
       z-index: 2;
       pointer-events: none;
       background:
-        radial-gradient(circle at center, rgba(255, 220, 150, 0.10) 0%, rgba(0, 0, 0, 0.42) 72%),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.58));
+        radial-gradient(circle at center, rgba(255, 220, 150, 0.08) 0%, rgba(0, 0, 0, 0.28) 72%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.42));
+      opacity: 0;
+      transition: opacity 1.2s ease;
     }
 
-    /* Basil model */
+    body.presentation-running #atmosphere-overlay {
+      opacity: 1;
+    }
+
     model-viewer {
       position: fixed;
       right: -4%;
@@ -73,7 +77,10 @@
       --poster-color: transparent;
     }
 
-    /* Top-left language controls, matching the Edward/Eirik style */
+    #native-ar-button {
+      display: none;
+    }
+
     #top-controls {
       position: fixed;
       left: 16px;
@@ -93,12 +100,12 @@
 
     #listen-label {
       margin: 0 0 2px;
-      color: #fff;
+      color: #222;
       font-size: 20px;
       line-height: 1.1;
       font-weight: 800;
       text-align: left;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.55);
     }
 
     .language-list {
@@ -133,7 +140,7 @@
     }
 
     .control-button.playing {
-      outline: 3px solid rgba(255, 255, 255, 0.42);
+      outline: 3px solid rgba(17, 17, 17, 0.22);
       background: #2b2b2b;
     }
 
@@ -145,22 +152,20 @@
       flex: 0 0 auto;
     }
 
-    /* Captions / bottom label */
     #caption-panel {
       position: fixed;
-      left: 24px;
-      bottom: 24px;
-      z-index: 10;
-      width: min(520px, calc(100% - 48px));
-      padding: 18px 20px;
-      border-radius: 18px;
-      background: rgba(0, 0, 0, 0.62);
-      color: #fff;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 9999;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.92);
       pointer-events: none;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.22);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
     }
 
     #caption-panel.visible {
@@ -170,52 +175,46 @@
 
     #main-caption {
       margin: 0;
-      font-size: 30px;
-      line-height: 1.1;
+      color: #111;
+      font-size: 22px;
+      line-height: 1.15;
       font-weight: 800;
-      letter-spacing: 0.01em;
     }
 
     #sub-caption {
-      margin: 8px 0 0;
-      font-size: 17px;
+      margin: 5px 0 0;
+      color: #333;
+      font-size: 15px;
       line-height: 1.35;
-      color: rgba(255, 255, 255, 0.88);
+      font-weight: 500;
     }
 
     #info-card {
       position: fixed;
-      right: 24px;
-      top: 24px;
-      z-index: 10;
-      max-width: 360px;
-      padding: 12px 16px;
-      border-radius: 14px;
-      background: rgba(244, 240, 232, 0.92);
-      color: #18130f;
-      font-size: 18px;
+      left: 16px;
+      top: 164px;
+      z-index: 9999;
+      max-width: 320px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.35;
       font-weight: 800;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
-      opacity: 0;
-      transform: translateY(-8px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      display: none;
       pointer-events: none;
-    }
-
-    #info-card.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
 
     #status-panel {
       position: fixed;
       left: 16px;
-      top: 140px;
+      top: 250px;
       z-index: 9999;
       max-width: 380px;
       padding: 10px 12px;
       border-radius: 10px;
-      background: rgba(0, 0, 0, 0.76);
+      background: rgba(0, 0, 0, 0.72);
       color: #fff;
       font-size: 13px;
       line-height: 1.35;
@@ -254,34 +253,26 @@
         height: 29px;
       }
 
-      #caption-panel {
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-        width: auto;
-        padding: 13px 15px;
-      }
-
-      #main-caption {
-        font-size: 23px;
-      }
-
-      #sub-caption {
-        font-size: 15px;
-      }
-
       #info-card {
-        right: 12px;
-        top: 12px;
-        max-width: calc(100% - 120px);
-        font-size: 15px;
+        left: 10px;
+        right: 10px;
+        top: 170px;
+        max-width: none;
       }
 
       #status-panel {
         left: 10px;
         right: 10px;
-        top: 138px;
+        top: 220px;
         max-width: none;
+      }
+
+      #main-caption {
+        font-size: 19px;
+      }
+
+      #sub-caption {
+        font-size: 14px;
       }
     }
   </style>
@@ -306,17 +297,19 @@
     shadow-intensity="1"
     exposure="1"
     environment-image="neutral">
+
+    <button id="native-ar-button" slot="ar-button" aria-hidden="true"></button>
   </model-viewer>
 
   <div id="top-controls" aria-label="Audio language controls">
     <h1 id="listen-label">Listen to Basil</h1>
 
     <div class="language-list">
-      <button id="english-button" class="control-button language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button" aria-label="Play English narration">
+      <button id="english-button" class="control-button language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button">
         <img class="flag-icon" src="./UKflag.jpg" alt="">
       </button>
 
-      <button id="dutch-button" class="control-button language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button" aria-label="Play Dutch narration">
+      <button id="dutch-button" class="control-button language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button">
         <img class="flag-icon" src="./Dutchflag.jpg" alt="">
       </button>
     </div>
@@ -329,18 +322,18 @@
     <p id="sub-caption">Basil introduces the story of the ship, the burial and the reconstruction.</p>
   </div>
 
+  <div id="status-panel"></div>
+
   <audio id="narration-audio" preload="auto">
     <source src="./BasilIntro.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
-  <div id="status-panel"></div>
-
   <script>
     const viewer = document.querySelector("#basil-viewer");
     const languageButtons = document.querySelectorAll(".language-button");
-    const narrationAudio = document.querySelector("#narration-audio");
     const statusPanel = document.querySelector("#status-panel");
+    const narrationAudio = document.querySelector("#narration-audio");
 
     const bgA = document.querySelector("#bg-a");
     const bgB = document.querySelector("#bg-b");
@@ -350,10 +343,10 @@
     const subCaption = document.querySelector("#sub-caption");
     const infoCard = document.querySelector("#info-card");
 
+    let currentLanguageButton = null;
     let activeBg = bgA;
     let inactiveBg = bgB;
     let currentSlideIndex = -1;
-    let currentLanguageButton = null;
     let presentationStarted = false;
 
     const slides = [
@@ -418,7 +411,7 @@
       infoCard.textContent = slide.card;
 
       captionPanel.classList.add("visible");
-      infoCard.classList.add("visible");
+      infoCard.style.display = "block";
     }
 
     function updateSlideByTime(currentTime) {
@@ -450,7 +443,8 @@
       bgB.style.backgroundImage = "";
 
       captionPanel.classList.remove("visible");
-      infoCard.classList.remove("visible");
+      infoCard.style.display = "none";
+      document.body.classList.remove("presentation-running");
     }
 
     async function startPresentation(button) {
@@ -466,12 +460,12 @@
           return;
         }
 
-        presentationStarted = true;
         currentLanguageButton = button;
         clearPlayingState();
-        button.classList.add("playing");
 
+        presentationStarted = true;
         resetPresentationVisuals();
+        document.body.classList.add("presentation-running");
 
         narrationAudio.pause();
         narrationAudio.src = audioSrc;
@@ -484,6 +478,7 @@
         }
 
         await narrationAudio.play();
+        button.classList.add("playing");
       } catch (error) {
         clearPlayingState();
         showStatus("Audio could not be played. Check that " + audioSrc.replace("./", "") + " is in the same folder as this HTML file.");
@@ -503,6 +498,12 @@
       showStatus("The model did not load. Check that Basil.glb is in the same folder as this HTML file and that it is a valid GLB.");
     });
 
+    languageButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        startPresentation(button);
+      });
+    });
+
     narrationAudio.addEventListener("timeupdate", () => {
       if (presentationStarted) {
         updateSlideByTime(narrationAudio.currentTime);
@@ -512,13 +513,7 @@
     narrationAudio.addEventListener("ended", () => {
       clearPlayingState();
       captionPanel.classList.add("visible");
-      infoCard.classList.add("visible");
-    });
-
-    languageButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        startPresentation(button);
-      });
+      infoCard.style.display = "block";
     });
 
     bgA.style.backgroundImage = "url('./01Basil.jpg')";
