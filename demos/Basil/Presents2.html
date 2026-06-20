@@ -14,19 +14,23 @@
       height: 100%;
       overflow: hidden;
       font-family: Arial, Helvetica, sans-serif;
-      background: #f4f0e8;
+      background: #000;
     }
 
     body {
       position: relative;
     }
 
+    /* =========================
+       BACKGROUND SLIDESHOW
+       ========================= */
+
     #background-stage {
       position: fixed;
       inset: 0;
       z-index: 1;
       overflow: hidden;
-      background: #f4f0e8;
+      background: #111;
     }
 
     .bg-slide {
@@ -46,8 +50,12 @@
     }
 
     @keyframes slowZoom {
-      from { transform: scale(1.04); }
-      to { transform: scale(1.11); }
+      from {
+        transform: scale(1.04);
+      }
+      to {
+        transform: scale(1.11);
+      }
     }
 
     #atmosphere-overlay {
@@ -56,15 +64,13 @@
       z-index: 2;
       pointer-events: none;
       background:
-        radial-gradient(circle at center, rgba(255, 220, 150, 0.08) 0%, rgba(0, 0, 0, 0.28) 72%),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.42));
-      opacity: 0;
-      transition: opacity 1.2s ease;
+        radial-gradient(circle at center, rgba(255, 220, 150, 0.10) 0%, rgba(0, 0, 0, 0.42) 72%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.58));
     }
 
-    body.presentation-running #atmosphere-overlay {
-      opacity: 1;
-    }
+    /* =========================
+       BASIL MODEL
+       ========================= */
 
     model-viewer {
       position: fixed;
@@ -80,6 +86,10 @@
     #native-ar-button {
       display: none;
     }
+
+    /* =========================
+       TOP LEFT LANGUAGE CONTROLS
+       ========================= */
 
     #top-controls {
       position: fixed;
@@ -100,12 +110,12 @@
 
     #listen-label {
       margin: 0 0 2px;
-      color: #222;
-      font-size: 20px;
+      color: #fff;
+      font-size: 25px;
       line-height: 1.1;
       font-weight: 800;
       text-align: left;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.55);
+      text-shadow: 0 2px 7px rgba(0, 0, 0, 0.7);
     }
 
     .language-list {
@@ -115,7 +125,7 @@
       width: auto;
     }
 
-    .control-button {
+    .language-button {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -135,12 +145,12 @@
       text-align: center;
     }
 
-    .control-button:active {
+    .language-button:active {
       transform: translateY(1px);
     }
 
-    .control-button.playing {
-      outline: 3px solid rgba(17, 17, 17, 0.22);
+    .language-button.playing {
+      outline: 3px solid rgba(255, 255, 255, 0.35);
       background: #2b2b2b;
     }
 
@@ -152,20 +162,25 @@
       flex: 0 0 auto;
     }
 
+    /* =========================
+       CAPTIONS / VISUAL CARDS
+       ========================= */
+
     #caption-panel {
       position: fixed;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      z-index: 9999;
-      padding: 10px 132px 10px 12px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.92);
-      pointer-events: none;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.22);
+      left: 24px;
+      bottom: 24px;
+      z-index: 10;
+      width: min(520px, calc(100% - 48px));
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.68);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(14px);
       transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
     }
 
     #caption-panel.visible {
@@ -175,38 +190,62 @@
 
     #main-caption {
       margin: 0;
-      color: #111;
-      font-size: 22px;
-      line-height: 1.15;
+      font-size: 34px;
+      line-height: 1.1;
       font-weight: 800;
+      letter-spacing: 0.01em;
     }
 
     #sub-caption {
-      margin: 5px 0 0;
-      color: #333;
-      font-size: 15px;
+      margin: 8px 0 0;
+      font-size: 18px;
       line-height: 1.35;
-      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
     }
 
+    #info-card {
+      position: fixed;
+      right: 24px;
+      top: 24px;
+      z-index: 10;
+      max-width: 360px;
+      padding: 16px 20px;
+      border-radius: 18px;
+      background: rgba(244, 240, 232, 0.94);
+      color: #18130f;
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+    }
+
+    #info-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Restart button: separate from caption box */
     #restart-button {
       position: fixed;
-      right: 22px;
+      right: 24px;
       bottom: 24px;
       z-index: 10000;
       width: auto;
-      min-width: 104px;
-      min-height: 44px;
-      padding: 9px 16px;
-      border: 2px solid #111;
-      border-radius: 24px;
-      background: #111;
-      color: #fff;
-      font-size: 17px;
+      min-width: 126px;
+      min-height: 54px;
+      padding: 13px 22px;
+      border: 0;
+      border-radius: 18px;
+      background: rgba(244, 240, 232, 0.94);
+      color: #18130f;
+      font-size: 20px;
       font-weight: 800;
       line-height: 1;
       cursor: pointer;
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.24);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
       display: none;
     }
 
@@ -214,21 +253,8 @@
       display: block;
     }
 
-    #info-card {
-      position: fixed;
-      left: 16px;
-      top: 164px;
-      z-index: 9999;
-      max-width: 320px;
-      padding: 9px 12px;
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.72);
-      color: #fff;
-      font-size: 15px;
-      line-height: 1.35;
-      font-weight: 800;
-      display: none;
-      pointer-events: none;
+    #restart-button:active {
+      transform: translateY(1px);
     }
 
     #status-panel {
@@ -239,7 +265,7 @@
       max-width: 380px;
       padding: 10px 12px;
       border-radius: 10px;
-      background: rgba(0, 0, 0, 0.72);
+      background: rgba(0, 0, 0, 0.76);
       color: #fff;
       font-size: 13px;
       line-height: 1.35;
@@ -259,14 +285,14 @@
         top: 10px;
         width: auto;
         max-width: calc(100% - 20px);
-        padding: 9px 10px 10px;
+        padding: 0;
       }
 
       #listen-label {
-        font-size: 19px;
+        font-size: 22px;
       }
 
-      .control-button {
+      .language-button {
         width: 68px;
         min-height: 44px;
         padding: 7px 9px;
@@ -279,44 +305,51 @@
       }
 
       #caption-panel {
-        padding: 9px 112px 9px 10px;
+        left: 12px;
+        bottom: 12px;
+        width: min(440px, calc(100% - 140px));
+        padding: 13px 15px;
       }
 
-      #restart-button {
-        right: 18px;
-        bottom: 22px;
-        min-width: 92px;
-        min-height: 40px;
-        padding: 8px 12px;
+      #main-caption {
+        font-size: 23px;
+      }
+
+      #sub-caption {
         font-size: 15px;
       }
 
       #info-card {
-        left: 10px;
-        right: 10px;
-        top: 170px;
-        max-width: none;
+        right: 12px;
+        top: 12px;
+        max-width: 320px;
+        padding: 12px 16px;
+        border-radius: 15px;
+        font-size: 17px;
+      }
+
+      #restart-button {
+        right: 12px;
+        bottom: 12px;
+        min-width: 102px;
+        min-height: 46px;
+        padding: 10px 16px;
+        border-radius: 16px;
+        font-size: 17px;
       }
 
       #status-panel {
         left: 10px;
         right: 10px;
-        top: 220px;
+        top: 170px;
         max-width: none;
-      }
-
-      #main-caption {
-        font-size: 19px;
-      }
-
-      #sub-caption {
-        font-size: 14px;
       }
     }
   </style>
 </head>
 
 <body>
+
   <div id="background-stage">
     <div id="bg-a" class="bg-slide active"></div>
     <div id="bg-b" class="bg-slide"></div>
@@ -343,11 +376,11 @@
     <h1 id="listen-label">Listen to Basil</h1>
 
     <div class="language-list">
-      <button id="english-button" class="control-button language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button">
+      <button id="english-button" class="language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button">
         <img class="flag-icon" src="./UKflag.jpg" alt="">
       </button>
 
-      <button id="dutch-button" class="control-button language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button">
+      <button id="dutch-button" class="language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button">
         <img class="flag-icon" src="./Dutchflag.jpg" alt="">
       </button>
     </div>
@@ -362,12 +395,12 @@
 
   <button id="restart-button" type="button">Restart</button>
 
-  <div id="status-panel"></div>
-
   <audio id="narration-audio" preload="auto">
     <source src="./BasilIntro.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
+
+  <div id="status-panel"></div>
 
   <script>
     const viewer = document.querySelector("#basil-viewer");
@@ -452,7 +485,7 @@
       infoCard.textContent = slide.card;
 
       captionPanel.classList.add("visible");
-      infoCard.style.display = "block";
+      infoCard.classList.add("visible");
     }
 
     function updateSlideByTime(currentTime) {
@@ -484,7 +517,7 @@
       bgB.style.backgroundImage = "";
 
       captionPanel.classList.remove("visible");
-      infoCard.style.display = "none";
+      infoCard.classList.remove("visible");
       document.body.classList.remove("presentation-running");
     }
 
@@ -564,7 +597,7 @@
     narrationAudio.addEventListener("ended", () => {
       clearPlayingState();
       captionPanel.classList.add("visible");
-      infoCard.style.display = "block";
+      infoCard.classList.add("visible");
     });
 
     bgA.style.backgroundImage = "url('./01Basil.jpg')";
