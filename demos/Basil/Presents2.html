@@ -21,6 +21,7 @@
       position: relative;
     }
 
+    /* Background slideshow */
     #background-stage {
       position: fixed;
       inset: 0;
@@ -46,12 +47,8 @@
     }
 
     @keyframes slowZoom {
-      from {
-        transform: scale(1.04);
-      }
-      to {
-        transform: scale(1.11);
-      }
+      from { transform: scale(1.04); }
+      to { transform: scale(1.11); }
     }
 
     #atmosphere-overlay {
@@ -64,6 +61,7 @@
         linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.58));
     }
 
+    /* Basil model */
     model-viewer {
       position: fixed;
       right: -4%;
@@ -75,77 +73,68 @@
       --poster-color: transparent;
     }
 
-    #native-ar-button {
-      display: none;
-    }
-
-    #launch-panel {
+    /* Top-left language controls, matching the Edward/Eirik style */
+    #top-controls {
       position: fixed;
-      inset: 0;
-      z-index: 20;
+      left: 16px;
+      top: 16px;
+      z-index: 9999;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        radial-gradient(circle at center, rgba(244, 240, 232, 0.94) 0%, rgba(50, 38, 25, 0.90) 100%);
-      transition: opacity 0.8s ease, visibility 0.8s ease;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      width: auto;
+      max-width: calc(100% - 32px);
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
     }
 
-    #launch-panel.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    #launch-card {
-      width: min(460px, calc(100% - 36px));
-      padding: 24px;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.92);
-      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35);
-      text-align: center;
-    }
-
-    #launch-card h1 {
-      margin: 0 0 8px;
-      color: #1f1a14;
-      font-size: 30px;
-      line-height: 1.05;
-    }
-
-    #launch-card p {
-      margin: 0 0 20px;
-      color: #4b4034;
-      font-size: 17px;
-      line-height: 1.35;
-    }
-
-    .language-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 54px;
-      padding: 12px 22px;
-      border: 0;
-      border-radius: 30px;
-      background: #111;
+    #listen-label {
+      margin: 0 0 2px;
       color: #fff;
-      font-size: 19px;
+      font-size: 20px;
+      line-height: 1.1;
       font-weight: 800;
-      cursor: pointer;
+      text-align: left;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
     }
 
     .language-list {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
+      gap: 8px;
+      width: auto;
     }
 
-    .language-button:active {
+    .control-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 74px;
+      min-height: 48px;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 24px;
+      background: #111;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: none;
+      text-align: center;
+    }
+
+    .control-button:active {
       transform: translateY(1px);
+    }
+
+    .control-button.playing {
+      outline: 3px solid rgba(255, 255, 255, 0.42);
+      background: #2b2b2b;
     }
 
     .flag-icon {
@@ -153,12 +142,14 @@
       height: 31px;
       object-fit: cover;
       border-radius: 3px;
+      flex: 0 0 auto;
     }
 
+    /* Captions / bottom label */
     #caption-panel {
       position: fixed;
       left: 24px;
-      bottom: 92px;
+      bottom: 24px;
       z-index: 10;
       width: min(520px, calc(100% - 48px));
       padding: 18px 20px;
@@ -194,7 +185,7 @@
 
     #info-card {
       position: fixed;
-      left: 24px;
+      right: 24px;
       top: 24px;
       z-index: 10;
       max-width: 360px;
@@ -216,41 +207,11 @@
       transform: translateY(0);
     }
 
-    #bottom-controls {
-      position: fixed;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      z-index: 12;
-      display: flex;
-      gap: 10px;
-      justify-content: space-between;
-      pointer-events: auto;
-    }
-
-    .control-button {
-      min-height: 46px;
-      padding: 9px 15px;
-      border-radius: 24px;
-      border: 2px solid #111;
-      background: rgba(244, 240, 232, 0.94);
-      color: #111;
-      font-size: 17px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .control-button.dark {
-      border-color: #111;
-      background: #111;
-      color: #fff;
-    }
-
     #status-panel {
       position: fixed;
       left: 16px;
-      top: 16px;
-      z-index: 30;
+      top: 140px;
+      z-index: 9999;
       max-width: 380px;
       padding: 10px 12px;
       border-radius: 10px;
@@ -269,10 +230,34 @@
         height: 82vh;
       }
 
+      #top-controls {
+        left: 10px;
+        top: 10px;
+        width: auto;
+        max-width: calc(100% - 20px);
+        padding: 9px 10px 10px;
+      }
+
+      #listen-label {
+        font-size: 19px;
+      }
+
+      .control-button {
+        width: 68px;
+        min-height: 44px;
+        padding: 7px 9px;
+        font-size: 18px;
+      }
+
+      .flag-icon {
+        width: 44px;
+        height: 29px;
+      }
+
       #caption-panel {
         left: 12px;
         right: 12px;
-        bottom: 78px;
+        bottom: 12px;
         width: auto;
         padding: 13px 15px;
       }
@@ -286,14 +271,17 @@
       }
 
       #info-card {
-        left: 12px;
+        right: 12px;
         top: 12px;
-        max-width: calc(100% - 24px);
+        max-width: calc(100% - 120px);
         font-size: 15px;
       }
 
-      #launch-card h1 {
-        font-size: 26px;
+      #status-panel {
+        left: 10px;
+        right: 10px;
+        top: 138px;
+        max-width: none;
       }
     }
   </style>
@@ -317,31 +305,20 @@
     loading="eager"
     shadow-intensity="1"
     exposure="1"
-    environment-image="neutral"
-    ar
-    ar-modes="scene-viewer quick-look webxr"
-    ar-scale="auto"
-    ar-placement="floor">
-
-    <button id="native-ar-button" slot="ar-button" aria-hidden="true"></button>
+    environment-image="neutral">
   </model-viewer>
 
-  <div id="launch-panel">
-    <div id="launch-card">
-      <h1>Listen to Basil</h1>
-      <p>Choose a language to begin the presentation.</p>
+  <div id="top-controls" aria-label="Audio language controls">
+    <h1 id="listen-label">Listen to Basil</h1>
 
-      <div class="language-list">
-        <button id="english-button" class="language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button">
-          <img class="flag-icon" src="./UKflag.jpg" alt="">
-          English
-        </button>
+    <div class="language-list">
+      <button id="english-button" class="control-button language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button" aria-label="Play English narration">
+        <img class="flag-icon" src="./UKflag.jpg" alt="">
+      </button>
 
-        <button id="dutch-button" class="language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button">
-          <img class="flag-icon" src="./Dutchflag.jpg" alt="">
-          Dutch
-        </button>
-      </div>
+      <button id="dutch-button" class="control-button language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button" aria-label="Play Dutch narration">
+        <img class="flag-icon" src="./Dutchflag.jpg" alt="">
+      </button>
     </div>
   </div>
 
@@ -357,20 +334,12 @@
     Your browser does not support the audio element.
   </audio>
 
-  <div id="bottom-controls">
-    <button id="restart-button" class="control-button dark" type="button">Restart</button>
-    <button id="room-ar-button" class="control-button" type="button">View outside</button>
-  </div>
-
   <div id="status-panel"></div>
 
   <script>
     const viewer = document.querySelector("#basil-viewer");
-    const launchPanel = document.querySelector("#launch-panel");
     const languageButtons = document.querySelectorAll(".language-button");
     const narrationAudio = document.querySelector("#narration-audio");
-    const roomArButton = document.querySelector("#room-ar-button");
-    const restartButton = document.querySelector("#restart-button");
     const statusPanel = document.querySelector("#status-panel");
 
     const bgA = document.querySelector("#bg-a");
@@ -384,8 +353,8 @@
     let activeBg = bgA;
     let inactiveBg = bgB;
     let currentSlideIndex = -1;
+    let currentLanguageButton = null;
     let presentationStarted = false;
-    let currentAudioSrc = "./BasilIntro.mp3";
 
     const slides = [
       {
@@ -425,6 +394,12 @@
 
     function hideStatus() {
       statusPanel.style.display = "none";
+    }
+
+    function clearPlayingState() {
+      languageButtons.forEach((button) => {
+        button.classList.remove("playing");
+      });
     }
 
     function setBackground(imageUrl) {
@@ -478,19 +453,29 @@
       infoCard.classList.remove("visible");
     }
 
-    async function startPresentation(audioSrc = currentAudioSrc, language = "English") {
+    async function startPresentation(button) {
+      const audioSrc = button.dataset.audio;
+      const language = button.dataset.language;
+
       try {
         hideStatus();
-        presentationStarted = true;
 
-        launchPanel.classList.add("hidden");
+        if (currentLanguageButton === button && !narrationAudio.paused) {
+          narrationAudio.pause();
+          clearPlayingState();
+          return;
+        }
+
+        presentationStarted = true;
+        currentLanguageButton = button;
+        clearPlayingState();
+        button.classList.add("playing");
+
         resetPresentationVisuals();
 
-        currentAudioSrc = audioSrc;
-
         narrationAudio.pause();
-        narrationAudio.currentTime = 0;
         narrationAudio.src = audioSrc;
+        narrationAudio.currentTime = 0;
 
         updateSlideByTime(0);
 
@@ -500,14 +485,10 @@
 
         await narrationAudio.play();
       } catch (error) {
-        const fileName = audioSrc.replace("./", "");
-        showStatus("Audio could not be played. Check that " + fileName + " is in the same folder as this HTML file.");
+        clearPlayingState();
+        showStatus("Audio could not be played. Check that " + audioSrc.replace("./", "") + " is in the same folder as this HTML file.");
         console.error(language + " audio playback failed:", error);
       }
-    }
-
-    function restartPresentation() {
-      startPresentation();
     }
 
     viewer.addEventListener("load", () => {
@@ -529,29 +510,15 @@
     });
 
     narrationAudio.addEventListener("ended", () => {
+      clearPlayingState();
       captionPanel.classList.add("visible");
       infoCard.classList.add("visible");
     });
 
     languageButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        startPresentation(button.dataset.audio, button.dataset.language);
+        startPresentation(button);
       });
-    });
-
-    restartButton.addEventListener("click", restartPresentation);
-
-    roomArButton.addEventListener("click", async () => {
-      try {
-        if (typeof viewer.activateAR === "function") {
-          await viewer.activateAR();
-        } else {
-          showStatus("AR view is not available in this browser. Open this page on a compatible Android or iPhone device.");
-        }
-      } catch (error) {
-        showStatus("AR view is not available on this device/browser. Open this page on a compatible Android or iPhone device.");
-        console.error("AR launch failed:", error);
-      }
     });
 
     bgA.style.backgroundImage = "url('./01Basil.jpg')";
