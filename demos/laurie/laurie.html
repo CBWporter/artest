@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Basil Presentation Viewer</title>
+  <title>Laurie Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
@@ -330,9 +330,9 @@
   <div id="atmosphere-overlay"></div>
 
   <model-viewer
-    id="basil-viewer"
-    src="./Basil.glb?v=1"
-    alt="Basil animated guide"
+    id="laurie-viewer"
+    src="./Laurie.glb?v=1"
+    alt="Laurie animated guide"
     camera-controls
     autoplay
     reveal="auto"
@@ -345,7 +345,7 @@
   </model-viewer>
 
   <div id="top-controls" aria-label="Audio language controls">
-    <h1 id="listen-label">Listen to Basil</h1>
+    <h1 id="listen-label">Listen to Laurie</h1>
 
     <div class="language-list">
       <button id="english-button" class="language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button">
@@ -366,7 +366,7 @@
   </div>
 
   <audio id="narration-audio" preload="auto">
-    <source src="./BasilIntro.mp3" type="audio/mpeg">
+    <source src="./Laurie01.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
@@ -395,27 +395,27 @@
     const slides = [
       {
         time: 0,
-        image: "./01Basil.jpg",
-        title: "Welcome to Sutton Hoo",
-        subtitle: "Basil begins the story of the king, the ship and the burial."
+        image: "./1-In-build.jpg",
+        title: "Welcome to the Longshed",
+        subtitle: "The story continues.."
       },
       {
         time: 12,
-        image: "./02Edith.jpg",
-        title: "A discovery of national importance",
-        subtitle: "The landscape, the mound and the people who brought the story back into view."
+        image: "./2-Volunteer.jpg",
+        title: "We build the legend..",
+        subtitle: "Bringing the past to life"
       },
       {
         time: 28,
-        image: "./03Excavation.jpg",
-        title: "The great ship burial",
-        subtitle: "A vanished ship survived as an impression in the earth."
+        image: "./3-Scouts.jpeg",
+        title: "educating the present",
+        subtitle: "One of our key remits is community involvement and educational outreach"
       },
       {
         time: 45,
-        image: "./04SH198302.jpg",
-        title: "The story continues",
-        subtitle: "Today the ship is being explored through reconstruction and experimental archaeology."
+        image: "./4-Ship-top.jpg,
+        title: "educating the present",
+        subtitle: "One of our key remits is community involvement and educational outreach"
       }
     ];
 
