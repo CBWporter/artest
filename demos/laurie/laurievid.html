@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Laurie Presentation Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #000;
+    }
+
+    body {
+      position: relative;
+    }
+
+    /* =========================
+       BACKGROUND SLIDESHOW
+       ========================= */
+
+    #background-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transform: scale(1.04);
+      transition: none;
+      animation: slowZoom 18s ease-in-out infinite alternate;
+    }
+
+    .bg-slide.active {
+      opacity: 1;
+    }
+
+    @keyframes slowZoom {
+      from {
+        transform: scale(1.04);
+      }
+      to {
+        transform: scale(1.11);
+      }
+    }
+
+    #atmosphere-overlay {
+      display: none !important;
+      background: none !important;
+      opacity: 0 !important;
+    }
+
+    /* =========================
+       BASIL MODEL
+       ========================= */
+
+    model-viewer {
+      position: fixed;
+      right: -4%;
+      bottom: -7%;
+      z-index: 5;
+      width: 62vw;
+      height: 92vh;
+      background: transparent;
+      --poster-color: transparent;
+    }
+
+    #native-ar-button {
+      display: none;
+    }
+
+    /* =========================
+       TOP LEFT LANGUAGE CONTROLS
+       ========================= */
+
+    #top-controls {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      width: auto;
+      max-width: calc(100% - 32px);
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    #listen-label {
+      margin: 0 0 2px;
+      color: #fff;
+      font-size: 25px;
+      line-height: 1.1;
+      font-weight: 800;
+      text-align: left;
+      text-shadow: 0 2px 7px rgba(0, 0, 0, 0.7);
+    }
+
+    .language-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: auto;
+    }
+
+    .language-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 74px;
+      min-height: 48px;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 24px;
+      background: #111;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: none;
+      text-align: center;
+    }
+
+    .language-button:active {
+      transform: translateY(1px);
+    }
+
+    .language-button.playing {
+      outline: 3px solid rgba(255, 255, 255, 0.35);
+      background: #2b2b2b;
+    }
+
+    .flag-icon {
+      width: 46px;
+      height: 31px;
+      object-fit: cover;
+      border-radius: 3px;
+      flex: 0 0 auto;
+    }
+
+    /* =========================
+       TOP RIGHT RESTART BUTTON
+       ========================= */
+
+    #restart-button {
+      position: fixed;
+      right: 24px;
+      top: 24px;
+      z-index: 10000;
+      width: auto;
+      min-width: 104px;
+      min-height: 46px;
+      padding: 11px 18px;
+      border: 0;
+      border-radius: 16px;
+      background: rgba(244, 240, 232, 0.94);
+      color: #18130f;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
+      display: none;
+    }
+
+    body.presentation-running #restart-button {
+      display: block;
+    }
+
+    #restart-button:active {
+      transform: translateY(1px);
+    }
+
+    /* =========================
+       BOTTOM NARRATIVE CAPTION
+       ========================= */
+
+    #caption-panel {
+      position: fixed;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      z-index: 10;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(0, 0, 0, 0.68);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+
+    #caption-panel.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #main-caption {
+      margin: 0;
+      color: #fff;
+      font-size: 34px;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    #sub-caption {
+      margin: 8px 0 0;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    #status-panel {
+      position: fixed;
+      left: 16px;
+      top: 250px;
+      z-index: 9999;
+      max-width: 380px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.76);
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.35;
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      model-viewer {
+        right: -12%;
+        bottom: -8%;
+        width: 82vw;
+        height: 74vh;
+      }
+
+      #top-controls {
+        left: 10px;
+        top: 10px;
+        width: auto;
+        max-width: calc(100% - 20px);
+        padding: 0;
+      }
+
+      #listen-label {
+        font-size: 22px;
+      }
+
+      .language-button {
+        width: 68px;
+        min-height: 44px;
+        padding: 7px 9px;
+        font-size: 18px;
+      }
+
+      .flag-icon {
+        width: 44px;
+        height: 29px;
+      }
+
+      #restart-button {
+        right: 12px;
+        top: 12px;
+        min-width: 90px;
+        min-height: 42px;
+        padding: 9px 14px;
+        border-radius: 15px;
+        font-size: 16px;
+      }
+
+      #caption-panel {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        padding: 13px 15px;
+        border-radius: 16px;
+      }
+
+      #main-caption {
+        font-size: 23px;
+      }
+
+      #sub-caption {
+        font-size: 15px;
+      }
+
+      #status-panel {
+        left: 10px;
+        right: 10px;
+        top: 170px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="background-stage">
+    <div id="bg-a" class="bg-slide active"></div>
+    <div id="bg-b" class="bg-slide"></div>
+  </div>
+
+  <div id="atmosphere-overlay"></div>
+
+  <model-viewer
+    id="laurie-viewer"
+    src="./Laurie.glb?v=1"
+    alt="Laurie animated guide"
+    camera-controls
+    autoplay
+    reveal="auto"
+    loading="eager"
+    shadow-intensity="1"
+    exposure="1"
+    environment-image="neutral">
+
+    <button id="native-ar-button" slot="ar-button" aria-hidden="true"></button>
+  </model-viewer>
+
+  <div id="top-controls" aria-label="Audio language controls">
+    <h1 id="listen-label">Listen to Laurie</h1>
+
+    <div class="language-list">
+      <button id="english-button" class="language-button" data-audio="./Laurie01.mp3" data-language="English" type="button">
+        <img class="flag-icon" src="./UKflag.jpg" alt="">
+      </button>
+
+      <button id="dutch-button" class="language-button" data-audio="./Dutch.mp3" data-language="Dutch" type="button">
+        <img class="flag-icon" src="./Dutchflag.jpg" alt="">
+      </button>
+    </div>
+  </div>
+
+  <button id="restart-button" type="button">Restart</button>
+
+  <div id="caption-panel">
+    <p id="main-caption">Welcome to the Longshed</p>
+    <p id="sub-caption">Laurie introduces the living experimental archaeology project behind the Sutton Hoo ship reconstruction.</p>
+  </div>
+
+  <audio id="narration-audio" preload="auto">
+    <source src="./Laurie01.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="status-panel"></div>
+
+  <script>
+    const viewer = document.querySelector("#laurie-viewer");
+    const languageButtons = document.querySelectorAll(".language-button");
+    const statusPanel = document.querySelector("#status-panel");
+    const narrationAudio = document.querySelector("#narration-audio");
+    const restartButton = document.querySelector("#restart-button");
+
+    const bgA = document.querySelector("#bg-a");
+    const bgB = document.querySelector("#bg-b");
+
+    const captionPanel = document.querySelector("#caption-panel");
+    const mainCaption = document.querySelector("#main-caption");
+    const subCaption = document.querySelector("#sub-caption");
+
+    let currentLanguageButton = null;
+    let activeBg = bgA;
+    let inactiveBg = bgB;
+    let currentSlideIndex = -1;
+    let presentationStarted = false;
+
+    const slides = [
+      {
+        time: 0,
+        image: "./StartCleave.mp4",
+        title: "Welcome to the Longshed",
+        subtitle: "Laurie introduces the ship as a living experimental archaeology project."
+      },
+      {
+        time: 12,
+        image: "./2-Volunteer.jpg",
+        title: "Built by many hands",
+        subtitle: "A large volunteer community helps build the ship, welcome visitors and share the work."
+      },
+      {
+        time: 28,
+        image: "./3-Scouts.jpeg",
+        title: "Learning through doing",
+        subtitle: "Education, outreach and hands-on explanation are central to the project."
+      },
+      {
+        time: 45,
+        image: "./4-Ship-top.jpg",
+        title: "Testing the ship on water",
+        subtitle: "The reconstruction helps us understand how the Saxon ship may have been built, rowed and used."
+      }
+    ];
+
+    function showStatus(message) {
+      statusPanel.textContent = message;
+      statusPanel.style.display = "block";
+    }
+
+    function hideStatus() {
+      statusPanel.style.display = "none";
+    }
+
+    function clearPlayingState() {
+      languageButtons.forEach((button) => {
+        button.classList.remove("playing");
+      });
+    }
+
+    function setBackground(imageUrl) {
+      const isVideo = imageUrl.toLowerCase().endsWith(".mp4");
+
+      inactiveBg.innerHTML = "";
+      inactiveBg.style.backgroundImage = "";
+
+      if (isVideo) {
+        const video = document.createElement("video");
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.style.width = "100%";
+        video.style.height = "100%";
+        video.style.objectFit = "cover";
+        video.style.position = "absolute";
+        video.style.inset = "0";
+
+        const source = document.createElement("source");
+        source.src = imageUrl;
+        source.type = "video/mp4";
+
+        video.appendChild(source);
+        inactiveBg.appendChild(video);
+        video.play().catch(() => {});
+      } else {
+        inactiveBg.style.backgroundImage = "url('" + imageUrl + "')";
+      }
+
+      inactiveBg.classList.add("active");
+      activeBg.classList.remove("active");
+
+      const oldActive = activeBg;
+      activeBg = inactiveBg;
+      inactiveBg = oldActive;
+      inactiveBg.innerHTML = "";
+      inactiveBg.style.backgroundImage = "";
+    }
+
+    function setCaption(slide) {
+      mainCaption.textContent = slide.title;
+      subCaption.textContent = slide.subtitle;
+      captionPanel.classList.add("visible");
+    }
+
+    function updateSlideByTime(currentTime) {
+      let selectedIndex = 0;
+
+      for (let i = 0; i < slides.length; i++) {
+        if (currentTime >= slides[i].time) {
+          selectedIndex = i;
+        }
+      }
+
+      if (selectedIndex !== currentSlideIndex) {
+        currentSlideIndex = selectedIndex;
+        const slide = slides[selectedIndex];
+        setBackground(slide.image);
+        setCaption(slide);
+      }
+    }
+
+    function resetPresentationVisuals() {
+      currentSlideIndex = -1;
+      activeBg = bgA;
+      inactiveBg = bgB;
+
+      bgA.classList.add("active");
+      bgB.classList.remove("active");
+
+      bgA.innerHTML = "";
+      bgB.innerHTML = "";
+      bgA.style.backgroundImage = "";
+      bgB.style.backgroundImage = "";
+
+      captionPanel.classList.remove("visible");
+      document.body.classList.remove("presentation-running");
+    }
+
+    async function startPresentation(button) {
+      const audioSrc = button.dataset.audio;
+      const language = button.dataset.language;
+
+      try {
+        hideStatus();
+
+        currentLanguageButton = button;
+        clearPlayingState();
+
+        presentationStarted = true;
+        resetPresentationVisuals();
+        document.body.classList.add("presentation-running");
+
+        narrationAudio.pause();
+        narrationAudio.src = audioSrc;
+        narrationAudio.currentTime = 0;
+
+        updateSlideByTime(0);
+
+        if (viewer && typeof viewer.play === "function") {
+          viewer.play();
+        }
+
+        await narrationAudio.play();
+        button.classList.add("playing");
+      } catch (error) {
+        clearPlayingState();
+        showStatus("Audio could not be played. Check that " + audioSrc.replace("./", "") + " is in the same folder as this HTML file.");
+        console.error(language + " audio playback failed:", error);
+      }
+    }
+
+    function restartPresentation() {
+      if (currentLanguageButton) {
+        startPresentation(currentLanguageButton);
+      } else {
+        startPresentation(document.querySelector("#english-button"));
+      }
+    }
+
+    viewer.addEventListener("load", () => {
+      const clips = viewer.availableAnimations || [];
+      if (clips.length > 0) {
+        viewer.animationName = clips[0];
+        viewer.play();
+      }
+    });
+
+    viewer.addEventListener("error", () => {
+      showStatus("The model did not load. Check that Laurie.glb is in the same folder as this HTML file and that it is a valid GLB.");
+    });
+
+    languageButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (currentLanguageButton === button && !narrationAudio.paused) {
+          narrationAudio.pause();
+          clearPlayingState();
+          return;
+        }
+
+        startPresentation(button);
+      });
+    });
+
+    restartButton.addEventListener("click", restartPresentation);
+
+    narrationAudio.addEventListener("timeupdate", () => {
+      if (presentationStarted) {
+        updateSlideByTime(narrationAudio.currentTime);
+      }
+    });
+
+    narrationAudio.addEventListener("ended", () => {
+      clearPlayingState();
+      captionPanel.classList.add("visible");
+    });
+
+    setBackground(slides[0].image);
+  </script>
+</body>
+</html>
