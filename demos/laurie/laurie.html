@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Laurie Viewer</title>
+  <title>Laurie Presentation Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
@@ -348,7 +348,7 @@
     <h1 id="listen-label">Listen to Laurie</h1>
 
     <div class="language-list">
-      <button id="english-button" class="language-button" data-audio="./BasilIntro.mp3" data-language="English" type="button">
+      <button id="english-button" class="language-button" data-audio="./Laurie01.mp3" data-language="English" type="button">
         <img class="flag-icon" src="./UKflag.jpg" alt="">
       </button>
 
@@ -361,8 +361,8 @@
   <button id="restart-button" type="button">Restart</button>
 
   <div id="caption-panel">
-    <p id="main-caption">Welcome to Sutton Hoo</p>
-    <p id="sub-caption">Basil introduces the story of the ship, the burial and the reconstruction.</p>
+    <p id="main-caption">Welcome to the Longshed</p>
+    <p id="sub-caption">Laurie introduces the living experimental archaeology project behind the Sutton Hoo ship reconstruction.</p>
   </div>
 
   <audio id="narration-audio" preload="auto">
@@ -373,7 +373,7 @@
   <div id="status-panel"></div>
 
   <script>
-    const viewer = document.querySelector("#basil-viewer");
+    const viewer = document.querySelector("#laurie-viewer");
     const languageButtons = document.querySelectorAll(".language-button");
     const statusPanel = document.querySelector("#status-panel");
     const narrationAudio = document.querySelector("#narration-audio");
@@ -397,25 +397,25 @@
         time: 0,
         image: "./1-In-build.jpg",
         title: "Welcome to the Longshed",
-        subtitle: "The story continues.."
+        subtitle: "Laurie introduces the ship as a living experimental archaeology project."
       },
       {
         time: 12,
         image: "./2-Volunteer.jpg",
-        title: "We build the legend..",
-        subtitle: "Bringing the past to life"
+        title: "Built by many hands",
+        subtitle: "A large volunteer community helps build the ship, welcome visitors and share the work."
       },
       {
         time: 28,
         image: "./3-Scouts.jpeg",
-        title: "educating the present",
-        subtitle: "One of our key remits is community involvement and educational outreach"
+        title: "Learning through doing",
+        subtitle: "Education, outreach and hands-on explanation are central to the project."
       },
       {
         time: 45,
-        image: "./4-Ship-top.jpg,
-        title: "educating the present",
-        subtitle: "One of our key remits is community involvement and educational outreach"
+        image: "./4-Ship-top.jpg",
+        title: "Testing the ship on water",
+        subtitle: "The reconstruction helps us understand how the Saxon ship may have been built, rowed and used."
       }
     ];
 
@@ -475,7 +475,7 @@
       bgA.classList.add("active");
       bgB.classList.remove("active");
 
-      bgA.style.backgroundImage = "url('./01Basil.jpg')";
+      bgA.style.backgroundImage = "url('./1-In-build.jpg')";
       bgB.style.backgroundImage = "";
 
       captionPanel.classList.remove("visible");
@@ -532,7 +532,7 @@
     });
 
     viewer.addEventListener("error", () => {
-      showStatus("The model did not load. Check that Basil.glb is in the same folder as this HTML file and that it is a valid GLB.");
+      showStatus("The model did not load. Check that Laurie.glb is in the same folder as this HTML file and that it is a valid GLB.");
     });
 
     languageButtons.forEach((button) => {
@@ -560,7 +560,7 @@
       captionPanel.classList.add("visible");
     });
 
-    bgA.style.backgroundImage = "url('./01Basil.jpg')";
+    bgA.style.backgroundImage = "url('./1-In-build.jpg')";
   </script>
 </body>
 </html>
