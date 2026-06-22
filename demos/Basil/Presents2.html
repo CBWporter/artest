@@ -166,10 +166,10 @@
        TOP RIGHT RESTART BUTTON
        ========================= */
 
-    #restart-button {
+    #restart-button,
+    #next-button {
       position: fixed;
       right: 24px;
-      top: 24px;
       z-index: 10000;
       width: auto;
       min-width: 104px;
@@ -185,13 +185,28 @@
       cursor: pointer;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
       display: none;
+      text-align: center;
+      text-decoration: none;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: center;
     }
 
-    body.presentation-running #restart-button {
-      display: block;
+    #restart-button {
+      top: 24px;
     }
 
-    #restart-button:active {
+    #next-button {
+      top: 80px;
+    }
+
+    body.presentation-running #restart-button,
+    body.presentation-running #next-button {
+      display: flex;
+    }
+
+    #restart-button:active,
+    #next-button:active {
       transform: translateY(1px);
     }
 
@@ -284,14 +299,22 @@
         height: 29px;
       }
 
-      #restart-button {
+      #restart-button,
+      #next-button {
         right: 12px;
-        top: 12px;
         min-width: 90px;
         min-height: 42px;
         padding: 9px 14px;
         border-radius: 15px;
         font-size: 16px;
+      }
+
+      #restart-button {
+        top: 12px;
+      }
+
+      #next-button {
+        top: 62px;
       }
 
       #caption-panel {
@@ -359,6 +382,7 @@
   </div>
 
   <button id="restart-button" type="button">Restart</button>
+  <a id="next-button" href="../laurie/laurie.html" aria-label="Open Laurie presentation">NEXT</a>
 
   <div id="caption-panel">
     <p id="main-caption">Welcome to Sutton Hoo</p>
