@@ -416,24 +416,32 @@
       {
         time: 0,
         image: "./01Basil.jpg",
+        model: "./Basil.glb?v=1",
+        alt: "Basil animated guide",
         title: "Welcome to Sutton Hoo",
         subtitle: "Basil begins the story of the king, the ship and the burial."
       },
       {
         time: 12,
         image: "./02Edith.jpg",
+        model: "./SuttonHooHelmet.glb?v=1",
+        alt: "Sutton Hoo helmet model",
         title: "A discovery of national importance",
         subtitle: "The landscape, the mound and the people who brought the story back into view."
       },
       {
         time: 28,
         image: "./03Excavation.jpg",
+        model: "./Basil.glb?v=1",
+        alt: "Basil animated guide",
         title: "The great ship burial",
         subtitle: "A vanished ship survived as an impression in the earth."
       },
       {
         time: 45,
         image: "./04SH198302.jpg",
+        model: "./Basil.glb?v=1",
+        alt: "Basil animated guide",
         title: "The story continues",
         subtitle: "Today the ship is being explored through reconstruction and experimental archaeology."
       }
@@ -470,6 +478,20 @@
       captionPanel.classList.add("visible");
     }
 
+    function setModel(slide) {
+      if (!viewer || !slide.model) {
+        return;
+      }
+
+      if (viewer.getAttribute("src") !== slide.model) {
+        viewer.setAttribute("src", slide.model);
+      }
+
+      if (slide.alt) {
+        viewer.setAttribute("alt", slide.alt);
+      }
+    }
+
     function updateSlideByTime(currentTime) {
       let selectedIndex = 0;
 
@@ -483,6 +505,7 @@
         currentSlideIndex = selectedIndex;
         const slide = slides[selectedIndex];
         setBackground(slide.image);
+        setModel(slide);
         setCaption(slide);
       }
     }
@@ -497,6 +520,11 @@
 
       bgA.style.backgroundImage = "url('./01Basil.jpg')";
       bgB.style.backgroundImage = "";
+
+      if (viewer) {
+        viewer.setAttribute("src", "./Basil.glb?v=1");
+        viewer.setAttribute("alt", "Basil animated guide");
+      }
 
       captionPanel.classList.remove("visible");
       document.body.classList.remove("presentation-running");
