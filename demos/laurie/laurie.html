@@ -391,7 +391,7 @@
     const slides = [
       {
         time: 0,
-        image: "./1-In-build.jpg",
+        image: "./StartCleave.mp4",
         title: "Welcome to the Longshed",
         subtitle: "Laurie introduces the ship as a living experimental archaeology project."
       },
@@ -431,13 +431,42 @@
     }
 
     function setBackground(imageUrl) {
-      inactiveBg.style.backgroundImage = "url('" + imageUrl + "')";
+      const isVideo = imageUrl.toLowerCase().endsWith(".mp4");
+
+      inactiveBg.innerHTML = "";
+      inactiveBg.style.backgroundImage = "";
+
+      if (isVideo) {
+        const video = document.createElement("video");
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.style.width = "100%";
+        video.style.height = "100%";
+        video.style.objectFit = "cover";
+        video.style.position = "absolute";
+        video.style.inset = "0";
+
+        const source = document.createElement("source");
+        source.src = imageUrl;
+        source.type = "video/mp4";
+
+        video.appendChild(source);
+        inactiveBg.appendChild(video);
+        video.play().catch(() => {});
+      } else {
+        inactiveBg.style.backgroundImage = "url('" + imageUrl + "')";
+      }
+
       inactiveBg.classList.add("active");
       activeBg.classList.remove("active");
 
       const oldActive = activeBg;
       activeBg = inactiveBg;
       inactiveBg = oldActive;
+      inactiveBg.innerHTML = "";
+      inactiveBg.style.backgroundImage = "";
     }
 
     function setCaption(slide) {
@@ -471,7 +500,9 @@
       bgA.classList.add("active");
       bgB.classList.remove("active");
 
-      bgA.style.backgroundImage = "url('./1-In-build.jpg')";
+      bgA.innerHTML = "";
+      bgB.innerHTML = "";
+      bgA.style.backgroundImage = "";
       bgB.style.backgroundImage = "";
 
       captionPanel.classList.remove("visible");
@@ -556,7 +587,7 @@
       captionPanel.classList.add("visible");
     });
 
-    bgA.style.backgroundImage = "url('./1-In-build.jpg')";
+    setBackground(slides[0].image);
   </script>
 </body>
 </html>
